@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Account Unlock Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            border: 1px solid #e5e7eb;
+        }
+
+        h2 {
+            color: #1d4ed8;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 24px;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Hello {Name},</h2>
+        <p>We received a request to unlock your Future Med account. If you made this request, click the button below to unlock your account:</p>
+
+        <p style="text-align: center;">
+            <a href="{{UnlockLink}}" class="button">Unlock My Account</a>
+        </p>
+
+        <p>If you didn’t request an unlock, you can safely ignore this email. Your account will remain locked until you complete this process.</p>
+
+        <div class="footer">
+            <p>Future Med &copy; @DateTime.Now.Year. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

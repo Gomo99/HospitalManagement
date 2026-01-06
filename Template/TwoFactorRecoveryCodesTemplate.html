@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .code-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Hello {{EmployeeName}},</h2>
+    <p>Your <strong>Two-Factor Authentication</strong> has been enabled successfully.</p>
+    <p>Below are your recovery codes. Keep them in a safe place. Each code can be used <strong>once</strong> if you lose access to your authenticator app:</p>
+
+    <div>
+        {{RecoveryCodes}}
+    </div>
+
+    <p>If you did not enable 2FA, please contact our support team immediately at <a href="mailto:{{SupportEmail}}">{{SupportEmail}}</a>.</p>
+
+    <p>— Future Med Security Team</p>
+</body>
+</html>
