@@ -1,0 +1,315 @@
+﻿@using HospitalManagement.ViewModel
+@model VerifyTwoFactorViewModel
+
+@{
+    ViewData["Title"] = "Two-Factor Authentication";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header bg-primary text-white py-4">
+                    <h3 class="text-center mb-0">
+                        <i class="fas fa-shield-alt fa-2x me-3"></i>Two-Factor Authentication
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="text-center mb-4">
+                        <i class="fas fa-mobile-alt fa-4x text-primary mb-3"></i>
+                        <h4>Verify Your Identity</h4>
+                        <p class="text-muted">
+                            Enter the 6-digit code from your authenticator app
+                        </p>
+                    </div>
+
+                    <form asp-action="VerifyTwoFactor" method="post" id="verify2faForm">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Code Input -->
+                        <div class="mb-4">
+                            <label asp-for="Code" class="form-label text-center d-block">
+                                6-Digit Verification Code
+                            </label>
+                            <div class="code-input-container mb-3">
+                                <input asp-for="Code" class="form-control form-control-lg text-center"
+                                       placeholder="000000" maxlength="6"
+                                       style="font-size: 2rem; letter-spacing: 1em; height: 60px;"
+                                       id="codeInput" autofocus autocomplete="off" />
+                            </div>
+                            <span asp-validation-for="Code" class="text-danger small d-block text-center"></span>
+                            <small class="form-text text-muted text-center d-block">
+                                Code refreshes every 30 seconds
+                            </small>
+                        </div>
+
+                        <!-- Timer -->
+                        <div class="text-center mb-4">
+                            <div id="timerContainer" class="mb-3">
+                                <div class="progress" style="height: 5px;">
+                                    <div id="timerProgress" class="progress-bar" role="progressbar" style="width: 100%"></div>
+                                </div>
+                                <small id="timerText" class="text-muted">Code expires in: <span id="countdown">30</span>s</small>
+                            </div>
+                        </div>
+
+                        <!-- Trust Device Option -->
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input asp-for="RememberDevice" class="form-check-input" />
+                                <label asp-for="RememberDevice" class="form-check-label">
+                                    <i class="fas fa-desktop me-1"></i>Trust this device for 30 days
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    You won't need to enter a code on this device for 30 days
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg" id="verifyBtn">
+                                <i class="fas fa-check-circle me-2"></i>Verify & Continue
+                            </button>
+                        </div>
+
+                        <!-- Alternative Options -->
+                        <div class="text-center">
+                            <div class="dropdown mb-3">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown">
+                                    <i class="fas fa-question-circle me-2"></i>Need Help?
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <button class="dropdown-item" type="button" onclick="useRecoveryCode()">
+                                            <i class="fas fa-key me-2"></i>Use Recovery Code
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" type="button" onclick="resendCode()">
+                                            <i class="fas fa-redo me-2"></i>Resend Code
+                                        </button>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#helpModal">
+                                            <i class="fas fa-life-ring me-2"></i>Get Help
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Back to Login -->
+                        <div class="text-center">
+                            <a asp-action="Logout" class="text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Login
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Recovery Code Modal -->
+            <div class="modal fade" id="recoveryModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="fas fa-key me-2"></i>Use Recovery Code
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Enter one of your 8-digit recovery codes:</p>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control text-center"
+                                       placeholder="XXXXXXXX" maxlength="8"
+                                       style="letter-spacing: 0.5em;" id="recoveryCode" />
+                            </div>
+                            <small class="text-muted">
+                                Each recovery code can only be used once. Get new codes from your profile.
+                            </small>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="submitRecoveryCode()">
+                                Use Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Modal -->
+            <div class="modal fade" id="helpModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="fas fa-life-ring me-2"></i>2FA Help
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h6>Common Issues:</h6>
+                            <ul>
+                                <li>Make sure time is synchronized on your device</li>
+                                <li>Check that you're entering the current code</li>
+                                <li>Try refreshing your authenticator app</li>
+                                <li>Use a recovery code if you lost your device</li>
+                            </ul>
+                            <p class="mb-0">
+                                <strong>Contact Support:</strong>
+                                <a href="mailto:support@futuremed.com">support@futuremed.com</a>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-format and auto-submit code
+        const codeInput = document.getElementById('codeInput');
+        let timerInterval;
+        let secondsRemaining = 30;
+
+        // Initialize timer
+        startTimer();
+
+        codeInput.addEventListener('input', function() {
+            // Allow only numbers
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            // Auto-submit when 6 digits are entered
+            if (this.value.length === 6) {
+                document.getElementById('verifyBtn').click();
+            }
+        });
+
+        // Timer functions
+        function startTimer() {
+            secondsRemaining = 30;
+            updateTimerDisplay();
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                secondsRemaining--;
+                updateTimerDisplay();
+
+                if (secondsRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    showCodeExpired();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const progress = (secondsRemaining / 30) * 100;
+            document.getElementById('timerProgress').style.width = progress + '%';
+            document.getElementById('countdown').textContent = secondsRemaining;
+
+            // Change color based on time remaining
+            const progressBar = document.getElementById('timerProgress');
+            if (secondsRemaining > 15) {
+                progressBar.className = 'progress-bar bg-success';
+            } else if (secondsRemaining > 5) {
+                progressBar.className = 'progress-bar bg-warning';
+            } else {
+                progressBar.className = 'progress-bar bg-danger';
+            }
+        }
+
+        function showCodeExpired() {
+            const timerContainer = document.getElementById('timerContainer');
+            timerContainer.innerHTML = `
+                <div class="alert alert-warning mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Code expired. Wait for the next code in your authenticator app.
+                </div>
+            `;
+
+            // Clear the input
+            codeInput.value = '';
+            codeInput.focus();
+
+            // Restart timer after 2 seconds
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        }
+
+        // Use recovery code
+        function useRecoveryCode() {
+            const recoveryModal = new bootstrap.Modal(document.getElementById('recoveryModal'));
+            recoveryModal.show();
+        }
+
+        function submitRecoveryCode() {
+            const recoveryCode = document.getElementById('recoveryCode').value;
+            if (recoveryCode.length === 8) {
+                codeInput.value = recoveryCode;
+                document.getElementById('verify2faForm').submit();
+            } else {
+                alert('Please enter a valid 8-digit recovery code.');
+            }
+        }
+
+        // Resend code (simulate)
+        function resendCode() {
+            // In a real app, this would trigger a new code generation
+            showNotification('New code generated in your authenticator app', 'info');
+            startTimer();
+            codeInput.value = '';
+            codeInput.focus();
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-info';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+
+            const notification = document.createElement('div');
+            notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.style.minWidth = '300px';
+
+            notification.innerHTML = `
+                <i class="fas ${icon} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+
+        // Auto-refresh page every 30 seconds to get new code
+        setTimeout(() => {
+            location.reload();
+        }, 30000); // 30 seconds
+    </script>
+}

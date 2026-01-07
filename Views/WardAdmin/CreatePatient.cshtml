@@ -1,0 +1,223 @@
+﻿@model Patient
+
+@{
+    ViewData["Title"] = "Create New Patient";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg border-success">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>Create New Patient
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreatePatient" method="post" id="createPatientForm">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <!-- Personal Information -->
+                            <div class="col-md-6">
+                                <h5 class="border-bottom pb-2 mb-4">
+                                    <i class="fas fa-user me-2"></i>Personal Information
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label asp-for="FirstName" class="form-label">
+                                        <i class="fas fa-user me-1"></i>First Name *
+                                    </label>
+                                    <input asp-for="FirstName" class="form-control"
+                                           placeholder="Enter first name" required />
+                                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="LastName" class="form-label">
+                                        <i class="fas fa-user me-1"></i>Last Name *
+                                    </label>
+                                    <input asp-for="LastName" class="form-control"
+                                           placeholder="Enter last name" required />
+                                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="IdNumber" class="form-label">
+                                        <i class="fas fa-id-card me-1"></i>ID/Passport Number *
+                                    </label>
+                                    <input asp-for="IdNumber" class="form-control"
+                                           placeholder="Enter ID number" required />
+                                    <span asp-validation-for="IdNumber" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Contact & Demographics -->
+                            <div class="col-md-6">
+                                <h5 class="border-bottom pb-2 mb-4">
+                                    <i class="fas fa-address-card me-2"></i>Contact & Demographics
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label asp-for="DOB" class="form-label">
+                                        <i class="fas fa-calendar me-1"></i>Date of Birth *
+                                    </label>
+                                    <input asp-for="DOB" type="date" class="form-control"
+                                           max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                    <span asp-validation-for="DOB" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Gender" class="form-label">
+                                        <i class="fas fa-venus-mars me-1"></i>Gender *
+                                    </label>
+                                    <select asp-for="Gender" class="form-select" asp-items="ViewBag.GenderList" required>
+                                        <option value="">Select Gender</option>
+                                    </select>
+                                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Cellphone" class="form-label">
+                                        <i class="fas fa-phone me-1"></i>Cellphone Number *
+                                    </label>
+                                    <input asp-for="Cellphone" class="form-control"
+                                           placeholder="Enter phone number" required />
+                                    <span asp-validation-for="Cellphone" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Emergency Contact Section -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2 mb-4">
+                                    <i class="fas fa-phone-alt me-2"></i>Emergency Contact (Optional)
+                                </h5>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <small>Emergency contact information can be added later in the patient's profile.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="Patients" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Patients
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save me-2"></i>Create Patient
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Help -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Quick Help
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-check-circle text-success me-2"></i>Required Fields</h6>
+                            <ul class="small">
+                                <li>First Name and Last Name are required</li>
+                                <li>Valid ID/Passport number is required</li>
+                                <li>Date of Birth must be in the past</li>
+                                <li>Phone number should be valid</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-lightbulb text-warning me-2"></i>Tips</h6>
+                            <ul class="small">
+                                <li>Double-check ID number for accuracy</li>
+                                <li>Use international format for phone numbers</li>
+                                <li>Patient will be created as "Active" by default</li>
+                                <li>You can admit the patient after creation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('createPatientForm');
+
+            // Client-side validation
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                const requiredFields = form.querySelectorAll('[required]');
+
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+
+                // Validate ID number (basic validation)
+                const idNumber = document.getElementById('IdNumber').value;
+                if (idNumber && idNumber.length < 6) {
+                    isValid = false;
+                    alert('ID number should be at least 6 characters long.');
+                }
+
+                // Validate phone number (basic validation)
+                const phone = document.getElementById('Cellphone').value;
+                const phonePattern = /^[0-9+\-\s()]+$/;
+                if (phone && !phonePattern.test(phone)) {
+                    isValid = false;
+                    alert('Please enter a valid phone number.');
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    alert('Please fill in all required fields correctly.');
+                }
+            });
+
+            // Real-time validation
+            const idInput = document.getElementById('IdNumber');
+            const phoneInput = document.getElementById('Cellphone');
+
+            if (idInput) {
+                idInput.addEventListener('blur', function() {
+                    if (this.value.length < 6) {
+                        this.classList.add('is-invalid');
+                        document.getElementById('IdNumber-error').textContent = 'ID number must be at least 6 characters';
+                    } else {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            }
+
+            if (phoneInput) {
+                phoneInput.addEventListener('blur', function() {
+                    const phonePattern = /^[0-9+\-\s()]{10,}$/;
+                    if (!phonePattern.test(this.value)) {
+                        this.classList.add('is-invalid');
+                        document.getElementById('Cellphone-error').textContent = 'Please enter a valid phone number';
+                    } else {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            }
+        });
+    </script>
+}

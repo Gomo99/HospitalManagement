@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -18,56 +19,18 @@ namespace HospitalManagement.Controllers
         private readonly ApplicationDbContext _context;
         private readonly EmailService _emailService;
         private readonly TwoFactorAuthService _twoFactorService;
-
+        private readonly ThemeService _themeService;
         public AccountController(ApplicationDbContext context, EmailService emailService,
-           TwoFactorAuthService twoFactorService)
+           TwoFactorAuthService twoFactorService, ThemeService themeService)
         {
             _context = context;
             _emailService = emailService;
             _twoFactorService = twoFactorService;
+            _themeService = themeService;
         }
 
 
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(Register model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            // Check if username or email already exists
-            if (_context.Employees.Any(e => e.UserName == model.UserName || e.Email == model.Email))
-            {
-                TempData["ErrorMessage"] = "Username or email already exists.";
-                return View(model);
-            }
-
-            var employee = new Employee
-            {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                UserName = model.UserName,
-                Email = model.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                Role = model.Role,
-                Gender = model.Gender,
-                HireDate = DateTime.Now,
-                IsActive = Status.Active // ✅ Immediately active - no email verification
-            };
-
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "Registration successful! You can now login.";
-            return RedirectToAction(nameof(Login));
-        }
-
+        
 
 
 
@@ -201,7 +164,7 @@ namespace HospitalManagement.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
@@ -228,7 +191,7 @@ namespace HospitalManagement.Controllers
 
             return View(model);
         }
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(EditProfileViewModel model)
@@ -252,13 +215,13 @@ namespace HospitalManagement.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet]
         public IActionResult ChangePassword()
         {
             return View();
         }
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -303,7 +266,7 @@ namespace HospitalManagement.Controllers
 
 
 
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> DeactivateAccount()
         {
@@ -319,7 +282,7 @@ namespace HospitalManagement.Controllers
             return View(user);
         }
 
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeactivateAccountConfirmed()
@@ -1330,7 +1293,19 @@ namespace HospitalManagement.Controllers
         new Claim(ClaimTypes.Name, user.UserName),
         new Claim(ClaimTypes.Role, user.Role.ToString()),
         new Claim("EmployeeID", user.EmployeeID.ToString())
-    };
+
+
+
+    }; 
+            
+            
+            
+            var themePreference = await _themeService.GetUserThemePreference(user.UserName);
+            HttpContext.Session.SetString("ThemePreference", themePreference.ToString());
+
+
+
+
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -1391,7 +1366,95 @@ namespace HospitalManagement.Controllers
         }
 
 
+        // Theme Management Actions
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> ThemeSettings()
+        {
+            var username = User.Identity.Name;
+            var currentTheme = await _themeService.GetUserThemePreference(username);
 
+            var model = new ThemeViewModel
+            {
+                SelectedTheme = currentTheme
+            };
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ThemeSettings(ThemeViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var username = User.Identity.Name;
+            await _themeService.SetUserThemePreference(username, model.SelectedTheme);
+
+            // Update session
+            HttpContext.Session.SetString("ThemePreference", model.SelectedTheme.ToString());
+
+            TempData["SuccessMessage"] = "Theme preference updated successfully!";
+            return RedirectToAction(nameof(ThemeSettings));
+        }
+
+        // Add this method to apply theme globally
+        private void ApplyThemeToViewBag()
+        {
+            var theme = HttpContext.Session.GetString("ThemePreference");
+            if (string.IsNullOrEmpty(theme) && User.Identity.IsAuthenticated)
+            {
+                // Fallback to system if not in session
+                theme = ThemeType.System.ToString();
+            }
+
+            ViewBag.ThemePreference = theme ?? ThemeType.System.ToString();
+            ViewBag.IsDarkMode = (theme == ThemeType.Dark.ToString() ||
+                                 (theme == ThemeType.System.ToString() && IsSystemDarkMode()));
+        }
+
+        private bool IsSystemDarkMode()
+        {
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            // Simple detection - in production, use JavaScript or proper header checking
+            return false; // Default to light
+        }
+
+        // Override OnActionExecuting to apply theme to all views
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+            ApplyThemeToViewBag();
+        }
+
+
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveThemePreference([FromBody] ThemeRequest request)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Json(new { success = false });
+
+            if (!Enum.TryParse<ThemeType>(request.Theme, out var themeType))
+                return Json(new { success = false });
+
+            var username = User.Identity.Name;
+            await _themeService.SetUserThemePreference(username, themeType);
+
+            // Update session
+            HttpContext.Session.SetString("ThemePreference", themeType.ToString());
+
+            return Json(new { success = true });
+        }
+
+        public class ThemeRequest
+        {
+            public string Theme { get; set; }
+        }
     }
 
 

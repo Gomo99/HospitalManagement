@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
 builder.Services.AddSignalR();
 
 // Configure the app
@@ -22,6 +21,7 @@ builder.Services.AddScoped<INotificationHubService, NotificationHubService>();
 builder.Services.AddScoped<TwoFactorAuthService>();
 builder.Services.AddScoped<MessageService>();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<ThemeService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -62,6 +62,11 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
+
+
+
+
+var app = builder.Build();
 
 
 

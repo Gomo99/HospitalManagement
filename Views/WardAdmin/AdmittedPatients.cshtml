@@ -1,0 +1,323 @@
+﻿@using HospitalManagement.AppStatus
+@model List<AdmittedPatientListViewModel>
+
+@{
+    ViewData["Title"] = "Admitted Patients";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-procedures me-2"></i>Admitted Patients
+                    </h4>
+                    <div>
+                        <a asp-action="Admit" class="btn btn-light btn-sm me-2">
+                            <i class="fas fa-user-plus me-1"></i>Admit New Patient
+                        </a>
+                        <a asp-action="DeletedAdmissionsList" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-history me-1"></i>Admission History
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search patients...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" id="doctorFilter">
+                                <option value="">All Doctors</option>
+                                @foreach (var doctor in Model.Select(m => m.DoctorName).Distinct().OrderBy(d => d))
+                                {
+                                    <option value="@doctor">@doctor</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="btn-group w-100">
+                                <button class="btn btn-outline-primary" onclick="exportAdmissions()">
+                                    <i class="fas fa-file-excel me-2"></i>Export
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="printAdmissions()">
+                                    <i class="fas fa-print me-2"></i>Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Admitted Patients Cards -->
+    @if (!Model.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-procedures fa-4x text-muted mb-3"></i>
+                        <h5>No Admitted Patients</h5>
+                        <p class="text-muted">There are currently no admitted patients in the system.</p>
+                        <a asp-action="Admit" class="btn btn-primary">
+                            <i class="fas fa-procedures me-2"></i>Admit First Patient
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row" id="patientsContainer">
+            @foreach (var patient in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4" data-doctor="@patient.DoctorName" data-nurse="@patient.NurseName">
+                    <div class="card shadow-sm h-100 border-@(patient.AdmissionStatus == Status.Active ? "primary" : "warning")">
+                        <div class="card-header d-flex justify-content-between align-items-center
+                                            bg-@(patient.AdmissionStatus == Status.Active ? "primary" : "warning") text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-user-injured me-2"></i>@patient.FullName
+                            </h6>
+                            <span class="badge bg-light text-dark">
+                                ID: @patient.PatientId
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <!-- Basic Info -->
+                            <div class="mb-3">
+                                <small class="text-muted">Admitted</small>
+                                <h6>@patient.AdmissionDate.ToString("dd MMM yyyy HH:mm")</h6>
+                            </div>
+
+                            <!-- Staff Assignments -->
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <small class="text-muted">Doctor</small>
+                                    <p class="mb-0">
+                                        <i class="fas fa-user-md me-1 text-info"></i>
+                                        @patient.DoctorName
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Nurse</small>
+                                    <p class="mb-0">
+                                        <i class="fas fa-user-nurse me-1 text-success"></i>
+                                        @patient.NurseName
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Medical Information -->
+                            <div class="mb-3">
+                                <small class="text-muted d-block">Medical Information</small>
+                                @if (patient.Allergies.Any())
+                                {
+                                    <span class="badge bg-warning me-1 mb-1">
+                                        <i class="fas fa-allergies me-1"></i>Allergies: @patient.Allergies.Count
+                                    </span>
+                                }
+                                @if (patient.Medications.Any())
+                                {
+                                    <span class="badge bg-info me-1 mb-1">
+                                        <i class="fas fa-pills me-1"></i>Meds: @patient.Medications.Count
+                                    </span>
+                                }
+                                @if (patient.Conditions.Any())
+                                {
+                                    <span class="badge bg-danger me-1 mb-1">
+                                        <i class="fas fa-heartbeat me-1"></i>Conditions: @patient.Conditions.Count
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- Patient Details -->
+                            <div class="mb-3">
+                                <small class="text-muted">Patient Details</small>
+                                <div class="d-flex justify-content-between">
+                                    <span>
+                                        <i class="fas fa-birthday-cake me-1"></i>
+                                        @patient.DOB.ToString("yyyy-MM-dd")
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-venus-mars me-1"></i>
+                                        @patient.Gender
+                                    </span>
+                                </div>
+                                <div class="mt-1">
+                                    <i class="fas fa-phone me-1"></i>
+                                    @patient.Cellphone
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <div class="d-flex justify-content-between">
+                                <div class="btn-group">
+                                    <a asp-action="EditAdmission" asp-route-id="@patient.AdmissionId"
+                                       class="btn btn-sm btn-outline-primary" title="Edit Admission">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="AssignBed" asp-route-id="@patient.PatientId"
+                                       class="btn btn-sm btn-outline-success" title="Assign Bed">
+                                        <i class="fas fa-bed"></i>
+                                    </a>
+                                    <a asp-action="CreatePatientFolder" asp-route-id="@patient.PatientId"
+                                       class="btn btn-sm btn-outline-info" title="Create Folder">
+                                        <i class="fas fa-folder-plus"></i>
+                                    </a>
+                                </div>
+                                <div class="btn-group">
+                                    <a asp-action="DischargePatient" asp-route-id="@patient.AdmissionId"
+                                       class="btn btn-sm btn-outline-warning" title="Discharge">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                    </a>
+                                    <a asp-action="DeleteAdmission" asp-route-id="@patient.AdmissionId"
+                                       class="btn btn-sm btn-outline-danger" title="Delete Admission">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Summary -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>Admission Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3>@Model.Count</h3>
+                                    <small class="text-muted">Total Admitted</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3>@Model.Count(p => p.AdmissionStatus == Status.Active)</h3>
+                                    <small class="text-muted">Currently Admitted</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3>@Model.Select(p => p.DoctorName).Distinct().Count()</h3>
+                                    <small class="text-muted">Assigned Doctors</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3>@Model.Select(p => p.NurseName).Distinct().Count()</h3>
+                                    <small class="text-muted">Assigned Nurses</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            const doctorFilter = document.getElementById('doctorFilter');
+            const patientsContainer = document.getElementById('patientsContainer');
+
+            if (searchInput && patientsContainer) {
+                searchInput.addEventListener('input', filterPatients);
+            }
+
+            if (doctorFilter && patientsContainer) {
+                doctorFilter.addEventListener('change', filterPatients);
+            }
+        });
+
+        function filterPatients() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const selectedDoctor = document.getElementById('doctorFilter').value;
+            const patientCards = document.querySelectorAll('#patientsContainer .col-md-6');
+
+            patientCards.forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                const cardDoctor = card.getAttribute('data-doctor');
+
+                const matchesSearch = cardText.includes(searchTerm);
+                const matchesDoctor = !selectedDoctor || cardDoctor === selectedDoctor;
+
+                card.style.display = matchesSearch && matchesDoctor ? '' : 'none';
+            });
+        }
+
+        function exportAdmissions() {
+            alert('Export functionality would generate an Excel report of all admissions.');
+            // In production, this would trigger a file download
+        }
+
+        function printAdmissions() {
+            const printContent = document.getElementById('patientsContainer').outerHTML;
+            const originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = `
+                <div class="container mt-5">
+                    <h1 class="text-center mb-4">Admitted Patients Report</h1>
+                    <p class="text-center mb-4">Generated on: ${new Date().toLocaleDateString()}</p>
+                    <div class="row">
+                        ${printContent}
+                    </div>
+                    <hr class="my-4">
+                    <small class="text-muted">
+                        Generated by Ward Admin: @User.Identity.Name
+                    </small>
+                </div>
+            `;
+
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+
+        // Auto-refresh every 60 seconds to check for new admissions
+        setInterval(() => {
+            if (!document.hidden) {
+                location.reload();
+            }
+        }, 60000);
+    </script>
+}

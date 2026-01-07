@@ -12,7 +12,11 @@ namespace HospitalManagement.ViewModel
         public string IdNumber { get; set; }
         public string Cellphone { get; set; }
 
-        public Status AdmissionStatus { get; set; }
+        // Use a dedicated AdmissionStatus enum for clarity (Admitted, Discharged, Transferred, etc.)
+        public AdmissionStatus AdmissionStatus { get; set; }
+
+        // Read-only convenience property for UI/serialization to show a friendly name
+        public string AdmissionStatusDisplay => AdmissionStatus.GetDisplayName();
         public DateTime AdmissionDate { get; set; }
 
         public string DoctorName { get; set; }

@@ -1,0 +1,367 @@
+﻿@model AdmitPatientViewModel
+
+@{
+    ViewData["Title"] = "Admit Patient";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-procedures me-2"></i>Admit Patient
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Admit" method="post" id="admitPatientForm">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Patient Selection -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-user me-2"></i>Select Patient
+                                </h5>
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="fas fa-user-injured me-1"></i>Patient *
+                                    </label>
+                                    <select asp-for="SelectedPatientId" class="form-select" required>
+                                        <option value="">-- Select Patient --</option>
+                                        @foreach (var patient in Model.PatientOptions)
+                                        {
+                                            <option value="@patient.PatientId">
+                                                @patient.FirstName (ID: @patient.PatientId)
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SelectedPatientId" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-user-md me-2"></i>Assign Staff
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label asp-for="SelectedDoctorId" class="form-label">
+                                                <i class="fas fa-user-md me-1"></i>Doctor *
+                                            </label>
+                                            <select asp-for="SelectedDoctorId" class="form-select" required>
+                                                <option value="">-- Select Doctor --</option>
+                                                @foreach (var doctor in Model.DoctorOptions)
+                                                {
+                                                    <option value="@doctor.EmployeeID">
+                                                        @doctor.FirstName
+                                                    </option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="SelectedDoctorId" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label asp-for="SelectedNurseId" class="form-label">
+                                                <i class="fas fa-user-nurse me-1"></i>Nurse *
+                                            </label>
+                                            <select asp-for="SelectedNurseId" class="form-select" required>
+                                                <option value="">-- Select Nurse --</option>
+                                                @foreach (var nurse in Model.NurseOptions)
+                                                {
+                                                    <option value="@nurse.EmployeeID">
+                                                        @nurse.FirstName
+                                                    </option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="SelectedNurseId" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical Information -->
+                        <div class="row">
+                            <!-- Allergies -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-warning text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-allergies me-2"></i>Allergies
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (Model.AllergyOptions.Any())
+                                        {
+                                            <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" id="selectAllAllergies" class="form-check-input">
+                                                    <label for="selectAllAllergies" class="form-check-label">Select All</label>
+                                                </div>
+                                            </div>
+                                            <div style="max-height: 200px; overflow-y: auto;">
+                                                @foreach (var allergy in Model.AllergyOptions)
+                                                {
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input allergy-checkbox"
+                                                               name="SelectedAllergyIds" value="@allergy.AllergyId"
+                                                               id="allergy_@allergy.AllergyId">
+                                                        <label class="form-check-label" for="allergy_@allergy.AllergyId">
+                                                            @allergy.Name
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">No allergies defined in system.</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Medications -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-pills me-2"></i>Current Medications
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (Model.MedicationOptions.Any())
+                                        {
+                                            <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" id="selectAllMedications" class="form-check-input">
+                                                    <label for="selectAllMedications" class="form-check-label">Select All</label>
+                                                </div>
+                                            </div>
+                                            <div style="max-height: 200px; overflow-y: auto;">
+                                                @foreach (var medication in Model.MedicationOptions)
+                                                {
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input medication-checkbox"
+                                                               name="SelectedMedicationIds" value="@medication.MedicationId"
+                                                               id="medication_@medication.MedicationId">
+                                                        <label class="form-check-label" for="medication_@medication.MedicationId">
+                                                            @medication.Name
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">No medications defined in system.</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conditions -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-danger text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-heartbeat me-2"></i>Medical Conditions
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (Model.ConditionOptions.Any())
+                                        {
+                                            <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" id="selectAllConditions" class="form-check-input">
+                                                    <label for="selectAllConditions" class="form-check-label">Select All</label>
+                                                </div>
+                                            </div>
+                                            <div style="max-height: 200px; overflow-y: auto;">
+                                                @foreach (var condition in Model.ConditionOptions)
+                                                {
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input condition-checkbox"
+                                                               name="SelectedConditionIds" value="@condition.ConditionId"
+                                                               id="condition_@condition.ConditionId">
+                                                        <label class="form-check-label" for="condition_@condition.ConditionId">
+                                                            @condition.Name
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">No conditions defined in system.</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Notes -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-sticky-note me-2"></i>Admission Notes (Optional)
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <textarea class="form-control" rows="3"
+                                                  placeholder="Any additional notes for this admission..."
+                                                  id="admissionNotes"></textarea>
+                                        <small class="text-muted">These notes will be added to the admission record.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="Patients" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-procedures me-2"></i>Admit Patient
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Guide -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Admission Guide
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-check text-success me-2"></i>Before Admission</h6>
+                            <ul class="small">
+                                <li>Verify patient identity</li>
+                                <li>Check existing allergies</li>
+                                <li>Review current medications</li>
+                                <li>Assign appropriate staff</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-exclamation-triangle text-warning me-2"></i>Important Notes</h6>
+                            <ul class="small">
+                                <li>Select all applicable allergies</li>
+                                <li>Record current medications</li>
+                                <li>Note any existing conditions</li>
+                                <li>Double-check staff assignments</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-arrow-right text-primary me-2"></i>After Admission</h6>
+                            <ul class="small">
+                                <li>Patient will be marked as "Admitted"</li>
+                                <li>Assigned staff will be notified</li>
+                                <li>Bed can be assigned separately</li>
+                                <li>Medical folder will be created</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select All functionality
+            const selectAllAllergies = document.getElementById('selectAllAllergies');
+            const selectAllMedications = document.getElementById('selectAllMedications');
+            const selectAllConditions = document.getElementById('selectAllConditions');
+
+            if (selectAllAllergies) {
+                selectAllAllergies.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('.allergy-checkbox');
+                    checkboxes.forEach(cb => cb.checked = this.checked);
+                });
+            }
+
+            if (selectAllMedications) {
+                selectAllMedications.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('.medication-checkbox');
+                    checkboxes.forEach(cb => cb.checked = this.checked);
+                });
+            }
+
+            if (selectAllConditions) {
+                selectAllConditions.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('.condition-checkbox');
+                    checkboxes.forEach(cb => cb.checked = this.checked);
+                });
+            }
+
+            // Form validation
+            const form = document.getElementById('admitPatientForm');
+            form.addEventListener('submit', function(e) {
+                const patientSelect = document.getElementById('SelectedPatientId');
+                const doctorSelect = document.getElementById('SelectedDoctorId');
+                const nurseSelect = document.getElementById('SelectedNurseId');
+
+                let isValid = true;
+
+                if (!patientSelect.value) {
+                    isValid = false;
+                    patientSelect.classList.add('is-invalid');
+                } else {
+                    patientSelect.classList.remove('is-invalid');
+                }
+
+                if (!doctorSelect.value) {
+                    isValid = false;
+                    doctorSelect.classList.add('is-invalid');
+                } else {
+                    doctorSelect.classList.remove('is-invalid');
+                }
+
+                if (!nurseSelect.value) {
+                    isValid = false;
+                    nurseSelect.classList.add('is-invalid');
+                } else {
+                    nurseSelect.classList.remove('is-invalid');
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    alert('Please select patient, doctor, and nurse before admitting.');
+                }
+            });
+
+            // Auto-save warning
+            let formChanged = false;
+            const formInputs = form.querySelectorAll('input, select, textarea');
+
+            formInputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    formChanged = true;
+                });
+            });
+
+            window.addEventListener('beforeunload', (e) => {
+                if (formChanged) {
+                    e.preventDefault();
+                    e.returnValue = 'You have unsaved changes to the admission form.';
+                }
+            });
+        });
+    </script>
+}

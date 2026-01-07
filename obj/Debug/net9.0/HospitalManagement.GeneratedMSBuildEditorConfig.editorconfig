@@ -28,6 +28,62 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/ChangeEmail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDaGFuZ2VFbWFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/DeactivateAccount.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxEZWFjdGl2YXRlQWNjb3VudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/EditProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxFZGl0UHJvZmlsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/ForgotPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/ManageTrustedDevices.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxNYW5hZ2VUcnVzdGVkRGV2aWNlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/SetupTwoFactor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxTZXR1cFR3b0ZhY3Rvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/ThemeSettings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxUaGVtZVNldHRpbmdzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/TwoFactorRecoveryCodes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxUd29GYWN0b3JSZWNvdmVyeUNvZGVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/VerifyTwoFactor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxWZXJpZnlUd29GYWN0b3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Account/ViewProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxWaWV3UHJvZmlsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -42,6 +98,38 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/WardAdmin/Admit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FyZEFkbWluXEFkbWl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/WardAdmin/AdmittedPatients.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FyZEFkbWluXEFkbWl0dGVkUGF0aWVudHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/WardAdmin/BedAssignmentsList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FyZEFkbWluXEJlZEFzc2lnbm1lbnRzTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/WardAdmin/CreatePatient.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FyZEFkbWluXENyZWF0ZVBhdGllbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/WardAdmin/DischargedPatients.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FyZEFkbWluXERpc2NoYXJnZWRQYXRpZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/WardAdmin/EditPatient.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FyZEFkbWluXEVkaXRQYXRpZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/WardAdmin/Patients.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FyZEFkbWluXFBhdGllbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/WardAdmin/WardAdminDashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FyZEFkbWluXFdhcmRBZG1pbkRhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/_ViewImports.cshtml]

@@ -1,0 +1,393 @@
+﻿@{
+    ViewData["Title"] = "Ward Admin Dashboard";
+    var unreadCount = ViewData["UnreadNotificationCount"] as int? ?? 0;
+}
+
+<div class="container-fluid">
+    <!-- Dashboard Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-tachometer-alt me-2"></i>Ward Admin Dashboard
+                    </h4>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-light text-dark me-3">
+                            <i class="fas fa-bell me-1"></i>@unreadCount Unread Notifications
+                        </span>
+                        <small>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Welcome, @User.Identity.Name!</h5>
+                    <p class="card-text">Manage patient admissions, bed assignments, and ward operations from this dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Patients</h6>
+                            <h3 id="totalPatientsCount">Loading...</h3>
+                        </div>
+                        <i class="fas fa-users fa-2x text-success"></i>
+                    </div>
+                    <a asp-action="Patients" class="btn btn-sm btn-outline-success mt-2 w-100">View Patients</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Admitted Patients</h6>
+                            <h3 id="admittedPatientsCount">Loading...</h3>
+                        </div>
+                        <i class="fas fa-procedures fa-2x text-info"></i>
+                    </div>
+                    <a asp-action="AdmittedPatients" class="btn btn-sm btn-outline-info mt-2 w-100">View Admitted</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Available Beds</h6>
+                            <h3 id="availableBedsCount">Loading...</h3>
+                        </div>
+                        <i class="fas fa-bed fa-2x text-warning"></i>
+                    </div>
+                    <a asp-action="BedAssignmentsList" class="btn btn-sm btn-outline-warning mt-2 w-100">Manage Beds</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-danger">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Discharged Patients</h6>
+                            <h3 id="dischargedPatientsCount">Loading...</h3>
+                        </div>
+                        <i class="fas fa-sign-out-alt fa-2x text-danger"></i>
+                    </div>
+                    <a asp-action="DischargedPatients" class="btn btn-sm btn-outline-danger mt-2 w-100">View Discharged</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-2 col-sm-4">
+                            <a asp-action="CreatePatient" class="btn btn-success w-100">
+                                <i class="fas fa-user-plus me-2"></i>New Patient
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <a asp-action="Admit" class="btn btn-primary w-100">
+                                <i class="fas fa-procedures me-2"></i>Admit Patient
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <a asp-action="BedAssignmentsList" class="btn btn-info w-100">
+                                <i class="fas fa-bed me-2"></i>Assign Bed
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <a asp-action="CreatePatientFolder" asp-route-id="0" class="btn btn-warning w-100">
+                                <i class="fas fa-folder-plus me-2"></i>Create Folder
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <a asp-action="DeletedPatients" class="btn btn-secondary w-100">
+                                <i class="fas fa-trash-restore me-2"></i>Restore Patients
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <a href="#" class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#reportsModal">
+                                <i class="fas fa-chart-bar me-2"></i>Reports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Admissions -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Recent Admissions
+                    </h5>
+                    <a asp-action="AdmittedPatients" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div id="recentAdmissionsTable">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading recent admissions...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Alerts -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>System Alerts
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="systemAlerts">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>No Critical Alerts</strong>
+                            <p class="mb-0 small">All systems are operating normally.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-link me-2"></i>Quick Links
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a asp-action="Patients" class="list-group-item list-group-item-action">
+                            <i class="fas fa-users me-2"></i>Patient Management
+                        </a>
+                        <a asp-action="AdmittedPatients" class="list-group-item list-group-item-action">
+                            <i class="fas fa-procedures me-2"></i>Admitted Patients
+                        </a>
+                        <a asp-action="BedAssignmentsList" class="list-group-item list-group-item-action">
+                            <i class="fas fa-bed me-2"></i>Bed Assignments
+                        </a>
+                        <a asp-action="DeletedPatients" class="list-group-item list-group-item-action">
+                            <i class="fas fa-trash-alt me-2"></i>Deleted Patients
+                        </a>
+                        <a asp-action="DischargedPatients" class="list-group-item list-group-item-action">
+                            <i class="fas fa-sign-out-alt me-2"></i>Discharged Patients
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reports Modal -->
+<div class="modal fade" id="reportsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-chart-bar me-2"></i>Ward Reports
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>Patient Reports</h6>
+                                <ul class="list-unstyled">
+                                    <li><a href="#" class="text-decoration-none">📊 Patient Admission Report</a></li>
+                                    <li><a href="#" class="text-decoration-none">📈 Patient Statistics</a></li>
+                                    <li><a href="#" class="text-decoration-none">📋 Daily Admission Summary</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>Bed Management</h6>
+                                <ul class="list-unstyled">
+                                    <li><a href="#" class="text-decoration-none">🛏️ Bed Occupancy Report</a></li>
+                                    <li><a href="#" class="text-decoration-none">📅 Ward Utilization</a></li>
+                                    <li><a href="#" class="text-decoration-none">📝 Turnover Report</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Generate Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load dashboard stats
+            loadDashboardStats();
+            loadRecentAdmissions();
+        });
+
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/WardAdmin/GetDashboardStats');
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Update counters with animation
+                    animateCounter('totalPatientsCount', data.totalPatients);
+                    animateCounter('admittedPatientsCount', data.admittedPatients);
+                    animateCounter('availableBedsCount', data.availableBeds);
+                    animateCounter('dischargedPatientsCount', data.dischargedPatients);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+                // Set default values
+                document.getElementById('totalPatientsCount').textContent = '0';
+                document.getElementById('admittedPatientsCount').textContent = '0';
+                document.getElementById('availableBedsCount').textContent = '0';
+                document.getElementById('dischargedPatientsCount').textContent = '0';
+            }
+        }
+
+        async function loadRecentAdmissions() {
+            try {
+                const response = await fetch('/WardAdmin/GetRecentAdmissions');
+                if (response.ok) {
+                    const data = await response.json();
+                    renderRecentAdmissions(data);
+                }
+            } catch (error) {
+                console.error('Error loading recent admissions:', error);
+                document.getElementById('recentAdmissionsTable').innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Unable to load recent admissions.
+                    </div>
+                `;
+            }
+        }
+
+        function renderRecentAdmissions(admissions) {
+            const container = document.getElementById('recentAdmissionsTable');
+
+            if (!admissions || admissions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No recent admissions found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Admission Date</th>
+                                <th>Doctor</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            admissions.forEach(admission => {
+                html += `
+                    <tr>
+                        <td>
+                            <strong>${admission.patientName}</strong><br>
+                            <small class="text-muted">${admission.patientId}</small>
+                        </td>
+                        <td>${new Date(admission.admissionDate).toLocaleDateString()}</td>
+                        <td>${admission.doctorName || 'N/A'}</td>
+                        <td>
+                            <span class="badge bg-${admission.status === 'Active' ? 'success' : 'warning'}">
+                                ${admission.status}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/WardAdmin/EditAdmission/${admission.admissionId}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const duration = 1000; // 1 second
+            const step = targetValue / (duration / 16); // 60fps
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= targetValue) {
+                    element.textContent = targetValue;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadDashboardStats();
+            loadRecentAdmissions();
+        }, 30000);
+    </script>
+}

@@ -1,0 +1,287 @@
+﻿@using HospitalManagement.AppStatus
+@model List<Patient>
+
+@{
+    ViewData["Title"] = "Patient Management";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-users me-2"></i>Patient Management
+                    </h4>
+                    <div>
+                        <a asp-action="CreatePatient" class="btn btn-light btn-sm me-2">
+                            <i class="fas fa-user-plus me-1"></i>Add Patient
+                        </a>
+                        <a asp-action="DeletedPatients" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-trash-restore me-1"></i>Deleted Patients
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search patients...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" id="statusFilter">
+                                <option value="">All Statuses</option>
+                                <option value="Active">Active</option>
+                                <option value="Admitted">Admitted</option>
+                                <option value="Discharged">Discharged</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="btn-group w-100">
+                                <button class="btn btn-outline-primary" onclick="exportToExcel()">
+                                    <i class="fas fa-file-excel me-2"></i>Export
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="printPatients()">
+                                    <i class="fas fa-print me-2"></i>Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Patients Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Patient List (@Model.Count patients)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-users fa-4x text-muted mb-3"></i>
+                            <h5>No Patients Found</h5>
+                            <p class="text-muted">No patients are currently registered in the system.</p>
+                            <a asp-action="CreatePatient" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-2"></i>Add First Patient
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="patientsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Full Name</th>
+                                        <th>ID Number</th>
+                                        <th>DOB</th>
+                                        <th>Gender</th>
+                                        <th>Contact</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var patient in Model)
+                                    {
+                                        <tr data-status="@patient.GetStatus.ToString()">
+                                            <td>
+                                                <span class="badge bg-secondary">@patient.PatientId</span>
+                                            </td>
+                                            <td>
+                                                <strong>@patient.FirstName @patient.LastName</strong>
+                                            </td>
+                                            <td>@patient.IdNumber</td>
+                                            <td>@patient.DOB.ToString("yyyy-MM-dd")</td>
+                                            <td>
+                                                <span class="badge bg-info">@patient.Gender</span>
+                                            </td>
+                                            <td>@patient.Cellphone</td>
+                                            <td>
+                                                @if (patient.GetStatus == Status.Active)
+                                                {
+                                                    <span class="badge bg-success">Active</span>
+                                                }
+                                                else if (patient.GetStatus == Status.Admitted)
+                                                {
+                                                    <span class="badge bg-primary">Admitted</span>
+                                                }
+                                                else if (patient.GetStatus == Status.Discharged)
+                                                {
+                                                    <span class="badge bg-secondary">Discharged</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">@patient.GetStatus</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a asp-action="PatientDetails" asp-route-id="@patient.PatientId"
+                                                       class="btn btn-outline-info" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a asp-action="EditPatient" asp-route-id="@patient.PatientId"
+                                                       class="btn btn-outline-primary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    @if (patient.GetStatus != Status.Delete)
+                                                    {
+                                                        <a asp-action="CreatePatientFolder" asp-route-id="@patient.PatientId"
+                                                           class="btn btn-outline-success" title="Create Folder">
+                                                            <i class="fas fa-folder-plus"></i>
+                                                        </a>
+                                                        <a asp-action="DeletePatient" asp-route-id="@patient.PatientId"
+                                                           class="btn btn-outline-danger" title="Delete">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Showing @Model.Count patients</small>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="refreshTable()">
+                                <i class="fas fa-redo me-1"></i>Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize search functionality
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const table = document.getElementById('patientsTable');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', filterTable);
+            }
+
+            if (statusFilter) {
+                statusFilter.addEventListener('change', filterTable);
+            }
+        });
+
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('#patientsTable tbody tr');
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+                const rowStatus = row.getAttribute('data-status');
+
+                const matchesSearch = rowText.includes(searchTerm);
+                const matchesStatus = !statusFilter || rowStatus === statusFilter;
+
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            });
+        }
+
+        function exportToExcel() {
+            alert('Export to Excel functionality would be implemented here.');
+            // In a real implementation, you would:
+            // 1. Collect data from the table
+            // 2. Format it for Excel
+            // 3. Trigger a download
+        }
+
+        function printPatients() {
+            const printContent = document.getElementById('patientsTable').outerHTML;
+            const originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = `
+                <div class="container mt-5">
+                    <h1 class="text-center mb-4">Patient List Report</h1>
+                    <p class="text-center mb-4">Generated on: ${new Date().toLocaleDateString()}</p>
+                    ${printContent}
+                    <hr class="my-4">
+                    <small class="text-muted">
+                        Generated by Ward Admin: @User.Identity.Name
+                    </small>
+                </div>
+            `;
+
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+
+        function refreshTable() {
+            location.reload();
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+F for search focus
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }
+
+            // Ctrl+P for print
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printPatients();
+            }
+
+            // Escape to clear search
+            if (e.key === 'Escape') {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.value = '';
+                    filterTable();
+                }
+            }
+        });
+    </script>
+}

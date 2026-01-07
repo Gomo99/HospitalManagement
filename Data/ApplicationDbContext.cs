@@ -34,8 +34,8 @@ namespace HospitalManagement.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Discharge> Discharges { get; set; }
         public DbSet<TrustedDevice> TrustedDevices { get; set; }
-        public DbSet<LoginAudit> LoginAudits { get; set; }    
-
+        public DbSet<LoginAudit> LoginAudits { get; set; }
+        public DbSet<UserPreference> UserPreferences { get; set; }
 
 
 
@@ -73,7 +73,16 @@ namespace HospitalManagement.Data
 
 
 
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Preferences)
+                .WithOne(p => p.Employee)
+                .HasForeignKey<UserPreference>(p => p.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            // Add unique constraint to ensure one preference per employee
+            modelBuilder.Entity<UserPreference>()
+                .HasIndex(p => p.EmployeeId)
+                .IsUnique();
 
 
 

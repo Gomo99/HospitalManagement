@@ -28,9 +28,6 @@ namespace HospitalManagement.Models
         [EmailAddress]
         public string Email { get; set; }
 
-
-
-
         public string? PasswordHash { get; set; }
 
         [Display(Name = "Gender")]
@@ -46,19 +43,15 @@ namespace HospitalManagement.Models
 
         public Status IsActive { get; set; } = Status.Active;
 
-
         public string? EmailVerificationTokenHash { get; set; }
         public DateTime? EmailVerificationTokenExpires { get; set; }
-
 
         public bool IsTwoFactorEnabled { get; set; } = false;
         public string? TwoFactorSecretKey { get; set; }
         public string? TwoFactorRecoveryCodes { get; set; }
 
-
         public string? ResetPin { get; set; }
         public DateTime? ResetPinExpiration { get; set; }
-
 
         public int FailedLoginAttempts { get; set; } = 0;
         public DateTime? LockoutEnd { get; set; }
@@ -67,9 +60,10 @@ namespace HospitalManagement.Models
         [NotMapped]
         public string FullName => $"{FirstName} {LastName}";
 
-
         public ICollection<Message> SentMessages { get; set; }      // Collection of messages sent
         public ICollection<Message> ReceivedMessages { get; set; }
+
+        // ✅ Add this navigation property for Preferences
+        public UserPreference? Preferences { get; set; }
     }
 }
-

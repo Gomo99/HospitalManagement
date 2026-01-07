@@ -34,7 +34,7 @@ namespace HospitalManagement.Models
         [StringLength(100)]
         public string? Notes { get; set; } = ""; // ✅ Optional
 
-
+        public DateTime? DischargeDate { get; set; } // ✅ Optional
         public Status AdmissionStatus { get; set; } = Status.Active;
     }
 }

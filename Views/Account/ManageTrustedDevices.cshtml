@@ -1,0 +1,248 @@
+﻿@using HospitalManagement.ViewModel
+@model List<TrustedDeviceViewModel>
+
+@{
+    ViewData["Title"] = "Manage Trusted Devices";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Header -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-desktop me-2"></i>Trusted Devices
+                    </h4>
+                    <span class="badge bg-light text-dark">
+                        @Model.Count device(s) trusted
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">
+                        Devices you've marked as "Trust this device" will not require two-factor authentication for 30 days.
+                        You can review and manage them here.
+                    </p>
+                </div>
+            </div>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Device List -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Trusted Devices List
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-desktop fa-4x text-muted mb-3"></i>
+                            <h5>No Trusted Devices</h5>
+                            <p class="text-muted">
+                                You haven't trusted any devices yet. When you login with 2FA enabled,
+                                you can choose "Trust this device" to skip verification for 30 days.
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Device Name</th>
+                                        <th>Added On</th>
+                                        <th>Last Used</th>
+                                        <th>Expires In</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var device in Model)
+                                    {
+                                        var isExpired = device.ExpiryDate < DateTime.Now;
+                                        var expiresIn = (device.ExpiryDate - DateTime.Now).Days;
+
+                                        <tr class="@(isExpired ? "table-warning" : "")">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    @if (device.DeviceName.Contains("Windows"))
+                                                    {
+                                                        <i class="fab fa-windows fa-2x me-3 text-primary"></i>
+                                                    }
+                                                    else if (device.DeviceName.Contains("Mac"))
+                                                    {
+                                                        <i class="fab fa-apple fa-2x me-3 text-secondary"></i>
+                                                    }
+                                                    else if (device.DeviceName.Contains("Android"))
+                                                    {
+                                                        <i class="fab fa-android fa-2x me-3 text-success"></i>
+                                                    }
+                                                    else if (device.DeviceName.Contains("iOS"))
+                                                    {
+                                                        <i class="fab fa-apple fa-2x me-3 text-dark"></i>
+                                                    }
+                                                    else if (device.DeviceName.Contains("Linux"))
+                                                    {
+                                                        <i class="fab fa-linux fa-2x me-3 text-info"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="fas fa-desktop fa-2x me-3 text-muted"></i>
+                                                    }
+                                                    <div>
+                                                        <strong>@device.DeviceName</strong>
+                                                        @if (isExpired)
+                                                        {
+                                                            <span class="badge bg-warning ms-2">Expired</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>@device.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                            <td>@(device.LastUsed == DateTime.MinValue ? "Never" : device.LastUsed.ToString("yyyy-MM-dd HH:mm"))</td>
+                                            <td>
+                                                @if (isExpired)
+                                                {
+                                                    <span class="badge bg-danger">Expired</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">@expiresIn day(s)</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <form asp-action="RemoveTrustedDevice" method="post"
+                                                      onsubmit="return confirmRemoveDevice('@device.DeviceName')">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="deviceId" value="@device.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-trash-alt me-1"></i>Remove
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Bulk Actions -->
+                        <div class="mt-4">
+                            <div class="alert alert-info">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Note:</strong> Trusted devices automatically expire after 30 days.
+                                    </div>
+                                    <form asp-action="RemoveAllTrustedDevices" method="post"
+                                          onsubmit="return confirmRemoveAll()">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="fas fa-trash-alt me-2"></i>Remove All Devices
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Information Card -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>About Trusted Devices
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>
+                                <i class="fas fa-shield-alt text-success me-2"></i>Benefits
+                            </h6>
+                            <ul>
+                                <li>Skip 2FA on trusted devices for 30 days</li>
+                                <li>Enhanced convenience on personal devices</li>
+                                <li>Maintains security on new/untrusted devices</li>
+                                <li>Easy to manage and revoke access</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>Security Tips
+                            </h6>
+                            <ul>
+                                <li>Only trust personal, secure devices</li>
+                                <li>Never trust public or shared computers</li>
+                                <li>Regularly review your trusted devices</li>
+                                <li>Remove devices you no longer use</li>
+                                <li>Remove all devices if you suspect unauthorized access</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a asp-action="ViewProfile" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Confirmation for removing a single device
+        function confirmRemoveDevice(deviceName) {
+            return confirm(`Are you sure you want to remove "${deviceName}" from trusted devices?\n\nYou will need to use 2FA when logging in from this device again.`);
+        }
+
+        // Confirmation for removing all devices
+        function confirmRemoveAll() {
+            return confirm('⚠️ WARNING: This will remove ALL trusted devices!\n\nYou will need to use 2FA on ALL devices when logging in.\n\nAre you sure you want to continue?');
+        }
+
+        // Auto-refresh expired status
+        function updateExpiredStatus() {
+            const rows = document.querySelectorAll('tbody tr');
+            const now = new Date();
+
+            rows.forEach(row => {
+                const expiryCell = row.cells[3];
+                const badge = expiryCell.querySelector('.badge');
+
+                if (badge && badge.textContent.includes('day(s)')) {
+                    const daysText = badge.textContent.match(/\d+/);
+                    if (daysText) {
+                        const days = parseInt(daysText[0]);
+                        if (days <= 0) {
+                            badge.className = 'badge bg-danger';
+                            badge.textContent = 'Expired';
+                            row.classList.add('table-warning');
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update status every minute
+        setInterval(updateExpiredStatus, 60000);
+
+        // Initial update
+        document.addEventListener('DOMContentLoaded', updateExpiredStatus);
+    </script>
+}

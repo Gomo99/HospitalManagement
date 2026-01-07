@@ -1,0 +1,119 @@
+﻿@using HospitalManagement.ViewModel
+@model EditProfileViewModel
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-edit me-2"></i>Edit Profile
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("EditProfile", "Account", FormMethod.Post, new { id = "editProfileForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.EmployeeID)
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    @Html.LabelFor(model => model.FirstName, new { @class = "form-label" })
+                                    <i class="fas fa-user me-1"></i>First Name *
+                                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", placeholder = "Enter first name" })
+                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    @Html.LabelFor(model => model.LastName, new { @class = "form-label" })
+                                    <i class="fas fa-user me-1"></i>Last Name *
+                                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", placeholder = "Enter last name" })
+                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    @Html.LabelFor(model => model.UserName, new { @class = "form-label" })
+                                    <i class="fas fa-at me-1"></i>Username *
+                                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", placeholder = "Enter username" })
+                                    <small class="form-text text-muted">This will be your login username</small>
+                                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    @Html.LabelFor(model => model.Email, new { @class = "form-label" })
+                                    <i class="fas fa-envelope me-1"></i>Email *
+                                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email", placeholder = "Enter email address" })
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.Gender, new { @class = "form-label" })
+                            <i class="fas fa-venus-mars me-1"></i>Gender
+                            @Html.DropDownListFor(model => model.Gender, (SelectList)ViewBag.GenderList, "Select Gender", new { @class = "form-select" })
+                            @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="alert alert-warning mt-4">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Note:</strong> Changing your email may require verification. 
+                            Some changes may require administrator approval.
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="ViewProfile" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-info">
+                                <i class="fas fa-save me-1"></i>Save Changes
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Form validation
+        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+            const username = document.getElementById('UserName').value;
+            const email = document.getElementById('Email').value;
+            
+            if (!username || !email) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Email format validation
+            if (!emailPattern.test(email)) {
+                e.preventDefault();
+                alert('Please enter a valid email address.');
+                return;
+            }
+        });
+    </script>
+}

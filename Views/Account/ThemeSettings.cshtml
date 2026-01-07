@@ -1,0 +1,307 @@
+﻿@using HospitalManagement.AppStatus
+@using HospitalManagement.ViewModel
+@model ThemeViewModel
+
+@{
+    ViewData["Title"] = "Theme Settings";
+    var isDarkMode = ViewBag.IsDarkMode as bool? ?? false;
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-palette me-2"></i>Theme Settings
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="ThemeSettings" method="post">
+                        <div class="mb-4">
+                            <h5 class="mb-3">Select Your Preferred Theme</h5>
+                            <p class="text-muted">Your theme preference will be saved and applied across all devices.</p>
+                        </div>
+
+                        <div class="theme-options mb-4">
+                            <div class="row g-3">
+                                <!-- Light Theme -->
+                                <div class="col-md-4">
+                                    <label class="theme-option-card @(Model.SelectedTheme == ThemeType.Light ? "selected" : "")">
+                                        <input type="radio" asp-for="SelectedTheme" value="@ThemeType.Light" class="visually-hidden" />
+                                        <div class="theme-preview light-preview">
+                                            <div class="preview-header"></div>
+                                            <div class="preview-body">
+                                                <div class="preview-content"></div>
+                                                <div class="preview-content-short"></div>
+                                            </div>
+                                        </div>
+                                        <div class="theme-name mt-2">
+                                            <i class="fas fa-sun me-2"></i>Light
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Dark Theme -->
+                                <div class="col-md-4">
+                                    <label class="theme-option-card @(Model.SelectedTheme == ThemeType.Dark ? "selected" : "")">
+                                        <input type="radio" asp-for="SelectedTheme" value="@ThemeType.Dark" class="visually-hidden" />
+                                        <div class="theme-preview dark-preview">
+                                            <div class="preview-header"></div>
+                                            <div class="preview-body">
+                                                <div class="preview-content"></div>
+                                                <div class="preview-content-short"></div>
+                                            </div>
+                                        </div>
+                                        <div class="theme-name mt-2">
+                                            <i class="fas fa-moon me-2"></i>Dark
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- System Theme -->
+                                <div class="col-md-4">
+                                    <label class="theme-option-card @(Model.SelectedTheme == ThemeType.System ? "selected" : "")">
+                                        <input type="radio" asp-for="SelectedTheme" value="@ThemeType.System" class="visually-hidden" />
+                                        <div class="theme-preview system-preview">
+                                            <div class="preview-header"></div>
+                                            <div class="preview-body">
+                                                <div class="preview-content"></div>
+                                                <div class="preview-content-short"></div>
+                                            </div>
+                                        </div>
+                                        <div class="theme-name mt-2">
+                                            <i class="fas fa-desktop me-2"></i>System
+                                        </div>
+                                        <small class="text-muted d-block mt-1">Follows device settings</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="ViewProfile" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Profile
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Save Theme
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+        /* Theme Variables */
+    :root {
+        /* Light Theme (Default) */
+        --primary-color: #0d6efd;
+        --secondary-color: #6c757d;
+        --success-color: #198754;
+        --danger-color: #dc3545;
+        --warning-color: #ffc107;
+        --info-color: #0dcaf0;
+
+        --bg-color: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --text-color: #212529;
+        --text-secondary: #6c757d;
+        --border-color: #dee2e6;
+
+        --card-bg: #ffffff;
+        --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        --input-bg: #ffffff;
+        --navbar-bg: #f8f9fa;
+        --sidebar-bg: #f8f9fa;
+    }
+
+    .dark-mode {
+        /* Dark Theme */
+        --primary-color: #0d6efd;
+        --secondary-color: #6c757d;
+        --success-color: #198754;
+        --danger-color: #dc3545;
+        --warning-color: #ffc107;
+        --info-color: #0dcaf0;
+
+        --bg-color: #121212;
+        --bg-secondary: #1e1e1e;
+        --text-color: #e0e0e0;
+        --text-secondary: #a0a0a0;
+        --border-color: #2d2d2d;
+
+        --card-bg: #1e1e1e;
+        --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5);
+        --input-bg: #2d2d2d;
+        --navbar-bg: #1a1a1a;
+        --sidebar-bg: #1a1a1a;
+    }
+
+    /* Apply theme variables */
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .card {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        box-shadow: var(--card-shadow);
+    }
+
+    .navbar {
+        background-color: var(--navbar-bg) !important;
+    }
+
+    .form-control {
+        background-color: var(--input-bg);
+        border-color: var(--border-color);
+        color: var(--text-color);
+    }
+
+    .table {
+        color: var(--text-color);
+    }
+
+    /* Theme preview styles */
+    .theme-option-card {
+        cursor: pointer;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.2s;
+        display: block;
+    }
+
+    .theme-option-card:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    .theme-option-card.selected {
+        border-color: var(--primary-color);
+        background-color: rgba(var(--primary-color-rgb), 0.1);
+    }
+
+    .theme-preview {
+        height: 100px;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+
+    .light-preview {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .dark-preview {
+        background: linear-gradient(135deg, #1e1e1e 0%, #121212 100%);
+    }
+
+    .system-preview {
+        background: linear-gradient(135deg, #ffffff 50%, #1e1e1e 50%);
+    }
+
+    .preview-header {
+        height: 20px;
+        background-color: var(--primary-color);
+        opacity: 0.7;
+    }
+
+    .preview-body {
+        padding: 10px;
+    }
+
+    .preview-content {
+        height: 8px;
+        background-color: var(--text-color);
+        opacity: 0.5;
+        margin-bottom: 5px;
+        border-radius: 2px;
+    }
+
+    .preview-content-short {
+        height: 8px;
+        width: 60%;
+        background-color: var(--text-color);
+        opacity: 0.3;
+        border-radius: 2px;
+    }
+
+    .theme-name {
+        font-weight: 500;
+        color: var(--text-color);
+    }
+
+    /* Quick theme toggle */
+    .theme-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .theme-toggle-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .theme-toggle-btn:hover {
+        transform: scale(1.1);
+    }
+</style>
+
+
+<script>
+    // Check for saved theme preference or system preference
+    function getPreferredTheme() {
+        const storedTheme = localStorage.getItem('theme') || '@ViewBag.ThemePreference';
+        if (storedTheme === 'System') {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light';
+        }
+        return storedTheme;
+    }
+
+    function setTheme(theme) {
+        const isDark = theme === 'Dark';
+        document.documentElement.classList.toggle('dark-mode', isDark);
+        localStorage.setItem('theme', theme);
+    }
+
+    // Initialize theme on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const preferredTheme = getPreferredTheme();
+        setTheme(preferredTheme);
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (localStorage.getItem('theme') === 'System') {
+                setTheme(e.matches ? 'Dark' : 'Light');
+            }
+        });
+    });
+</script>

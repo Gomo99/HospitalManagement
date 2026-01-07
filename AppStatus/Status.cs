@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace HospitalManagement.AppStatus
 {
@@ -11,6 +12,28 @@ namespace HospitalManagement.AppStatus
         Discharged,
         Inactive,
         Pending,
+        Cancelled
+    }
+    
+    // Specific status for patient admissions. Keeps Admission states isolated from generic Status enum.
+    public enum AdmissionStatus
+    {
+        [Display(Name = "Admitted")]
+        Admitted,
+
+        [Display(Name = "Discharged")]
+        Discharged,
+
+        [Display(Name = "Transferred")]
+        Transferred,
+
+        [Display(Name = "On Hold")]
+        OnHold,
+
+        [Display(Name = "Pending Admission")]
+        PendingAdmission,
+
+        [Display(Name = "Cancelled")]
         Cancelled
     }
     public enum MedicationType
@@ -178,4 +201,27 @@ namespace HospitalManagement.AppStatus
         High,
         Urgent
     }
+
+    // Models/ThemeType.cs
+    public enum ThemeType
+    {
+        Light,      // Default
+        Dark,
+        System     // Follow system preference
+    }
+
+    public static class EnumExtensions
+    {
+        public static string GetDisplayName<T>(this T enumValue) where T : struct, System.Enum
+        {
+            var memberInfo = typeof(T).GetMember(enumValue.ToString());
+            if (memberInfo.Length == 0) return enumValue.ToString();
+            var displayAttr = memberInfo[0].GetCustomAttributes(typeof(DisplayAttribute), false)
+                .OfType<DisplayAttribute>()
+                .FirstOrDefault();
+            return displayAttr?.GetName() ?? enumValue.ToString();
+        }
+    }
+
+
 }

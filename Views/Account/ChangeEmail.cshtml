@@ -1,0 +1,282 @@
+﻿@using HospitalManagement.ViewModel
+@using System.Security.Claims
+@model ChangeEmailViewModel
+
+@{
+    ViewData["Title"] = "Change Email Address";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header bg-primary text-white py-4">
+                    <h3 class="text-center mb-0">
+                        <i class="fas fa-envelope fa-2x me-3"></i>Change Email Address
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="ChangeEmail" method="post" id="changeEmailForm">
+                        @Html.AntiForgeryToken()
+                        
+                        <!-- Current Email -->
+                        <div class="mb-4 text-center">
+                            <div class="alert alert-info">
+                                <h6 class="alert-heading mb-2">Current Email Address</h6>
+                                <p class="mb-0 fs-5">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <strong>@Context.User.FindFirstValue(ClaimTypes.Email) ?? "Not set"</strong>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Password Verification -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-lock me-2"></i>Verify Your Identity
+                            </h5>
+                            <div class="mb-3">
+                                <label asp-for="CurrentPassword" class="form-label">
+                                    Current Password *
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="CurrentPassword" type="password" class="form-control" 
+                                           placeholder="Enter your current password" id="currentPassword" />
+                                    <button class="btn btn-outline-secondary" type="button" 
+                                            id="toggleCurrentPassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="CurrentPassword" class="text-danger small"></span>
+                                <small class="form-text text-muted">
+                                    We need to verify it's really you before changing your email
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- New Email -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-envelope-open me-2"></i>New Email Address
+                            </h5>
+                            <div class="mb-3">
+                                <label asp-for="NewEmail" class="form-label">
+                                    New Email Address *
+                                </label>
+                                <input asp-for="NewEmail" type="email" class="form-control" 
+                                       placeholder="Enter new email address" id="newEmail" />
+                                <span asp-validation-for="NewEmail" class="text-danger small"></span>
+                                <small class="form-text text-muted">
+                                    We'll send a verification link to this address
+                                </small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmNewEmail" class="form-label">
+                                    Confirm New Email *
+                                </label>
+                                <input type="email" class="form-control" id="confirmNewEmail" 
+                                       placeholder="Confirm new email address" />
+                                <div id="emailMatch" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Important Notes -->
+                        <div class="alert alert-warning mb-4">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Important Information
+                            </h6>
+                            <ul class="mb-0">
+                                <li>You'll receive a verification link at the new email address</li>
+                                <li>Your email will not change until you click the verification link</li>
+                                <li>Login notifications will be sent to the new address</li>
+                                <li>Password reset emails will go to the new address</li>
+                                <li>The verification link expires in 24 hours</li>
+                            </ul>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <i class="fas fa-paper-plane me-2"></i>Send Verification Email
+                            </button>
+                        </div>
+
+                        <!-- Back Button -->
+                        <div class="text-center">
+                            <a asp-action="ViewProfile" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel & Return to Profile
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Frequently Asked Questions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="emailFAQ">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    How long does verification take?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#emailFAQ">
+                                <div class="accordion-body">
+                                    The verification link expires in 24 hours. You should receive the email within a few minutes.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    What if I don't receive the verification email?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#emailFAQ">
+                                <div class="accordion-body">
+                                    Check your spam folder. If you still don't see it, you can cancel and try again, or contact support.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    Can I use the same email as another account?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#emailFAQ">
+                                <div class="accordion-body">
+                                    No, each email address can only be associated with one account in our system.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Toggle password visibility
+        document.getElementById('toggleCurrentPassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('currentPassword');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Email confirmation validation
+        const newEmailInput = document.getElementById('newEmail');
+        const confirmEmailInput = document.getElementById('confirmNewEmail');
+
+        function validateEmails() {
+            const newEmail = newEmailInput.value;
+            const confirmEmail = confirmEmailInput.value;
+            const matchDiv = document.getElementById('emailMatch');
+            
+            if (!newEmail || !confirmEmail) {
+                matchDiv.innerHTML = '';
+                return false;
+            }
+            
+            if (newEmail === confirmEmail) {
+                matchDiv.innerHTML = '<small class="text-success"><i class="fas fa-check-circle me-1"></i>Email addresses match</small>';
+                return true;
+            } else {
+                matchDiv.innerHTML = '<small class="text-danger"><i class="fas fa-times-circle me-1"></i>Email addresses do not match</small>';
+                return false;
+            }
+        }
+
+        newEmailInput.addEventListener('input', validateEmails);
+        confirmEmailInput.addEventListener('input', validateEmails);
+
+        // Form validation
+        document.getElementById('changeEmailForm').addEventListener('submit', function(e) {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newEmail = newEmailInput.value;
+            const confirmEmail = confirmEmailInput.value;
+            
+            if (!currentPassword) {
+                e.preventDefault();
+                alert('Please enter your current password.');
+                return;
+            }
+            
+            if (!newEmail || !confirmEmail) {
+                e.preventDefault();
+                alert('Please enter and confirm your new email address.');
+                return;
+            }
+            
+            if (!validateEmails()) {
+                e.preventDefault();
+                alert('Email addresses do not match. Please check and try again.');
+                return;
+            }
+            
+            // Email format validation
+            if (!emailPattern.test(newEmail)) {
+                e.preventDefault();
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Check if email is the same as current
+            const currentUserEmail = '@Context.User.FindFirstValue(ClaimTypes.Email)';
+            if (newEmail.toLowerCase() === currentUserEmail?.toLowerCase()) {
+                e.preventDefault();
+                alert('New email cannot be the same as your current email address.');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+            submitBtn.disabled = true;
+        });
+
+        // Auto-check email availability (optional)
+        let emailCheckTimeout;
+        newEmailInput.addEventListener('input', function() {
+            clearTimeout(emailCheckTimeout);
+            
+            const email = this.value;
+            
+            if (!emailPattern.test(email)) {
+                return;
+            }
+            
+            emailCheckTimeout = setTimeout(() => {
+                // In a real application, you would make an AJAX call here
+                // to check if the email is already registered
+                console.log('Checking email availability:', email);
+            }, 500);
+        });
+    </script>
+}

@@ -1,0 +1,154 @@
+﻿@using HospitalManagement.AppStatus
+@model Employee
+
+@{
+    ViewData["Title"] = "Deactivate Account";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-danger">
+                <div class="card-header bg-danger text-white py-4">
+                    <h3 class="text-center mb-0">
+                        <i class="fas fa-user-slash fa-2x me-3"></i>Deactivate Account
+                    </h3>
+                </div>
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <div class="alert-icon mb-3">
+                            <i class="fas fa-exclamation-triangle fa-4x text-danger"></i>
+                        </div>
+                        <h2 class="text-danger mb-3">⚠️ Warning: This Action is Permanent</h2>
+                        <p class="lead">
+                            You are about to deactivate your account. This action cannot be undone.
+                        </p>
+                    </div>
+
+                    <!-- Account Information -->
+                    <div class="card mb-4 border-warning">
+                        <div class="card-header bg-warning text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-user-circle me-2"></i>Account to be Deactivated
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-4">Full Name</dt>
+                                <dd class="col-sm-8">@Model.FirstName @Model.LastName</dd>
+
+                                <dt class="col-sm-4">Username</dt>
+                                <dd class="col-sm-8">@Model.UserName</dd>
+
+                                <dt class="col-sm-4">Email</dt>
+                                <dd class="col-sm-8">@Model.Email</dd>
+
+                                <dt class="col-sm-4">Role</dt>
+                                <dd class="col-sm-8">@Model.Role</dd>
+
+                                <dt class="col-sm-4">Status</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsActive == Status.Active)
+                                    {
+                                        <span class="badge bg-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Already Inactive</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!-- Consequences -->
+                    <div class="alert alert-danger mb-4">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-ban me-2"></i>What happens when you deactivate?
+                        </h5>
+                        <ul class="mb-0">
+                            <li>You will be immediately logged out</li>
+                            <li>You cannot login with this account anymore</li>
+                            <li>Your profile data will be preserved</li>
+                            <li>Administrators can reactivate your account if needed</li>
+                            <li>All your active sessions will be terminated</li>
+                            <li>You will lose access to all system features</li>
+                        </ul>
+                    </div>
+
+                    <!-- Reactivation Info -->
+                    <div class="alert alert-info mb-4">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>Need to Reactivate?
+                        </h5>
+                        <p class="mb-0">
+                            If you change your mind later, you will need to contact your system administrator
+                            or IT support to reactivate your account.
+                        </p>
+                    </div>
+
+                    <!-- Confirmation Form -->
+                    <form asp-action="DeactivateAccountConfirmed" method="post" id="deactivateForm">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="confirmDeactivate" required>
+                                <label class="form-check-label" for="confirmDeactivate">
+                                    I understand that this action is permanent and cannot be undone.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg" id="deactivateBtn">
+                                <i class="fas fa-user-slash me-2"></i>Confirm Deactivation
+                            </button>
+                            <a asp-action="ViewProfile" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancel & Return to Profile
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Contact Info -->
+                    <div class="text-center mt-5">
+                        <h6>Need Help?</h6>
+                        <p class="text-muted">
+                            Contact IT support if you're unsure or need assistance:
+                            <a href="mailto:support@futuremed.com" class="text-decoration-none">
+                                support@futuremed.com
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Confirmation dialog
+        document.getElementById('deactivateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const confirmCheck = document.getElementById('confirmDeactivate');
+            if (!confirmCheck.checked) {
+                alert('Please confirm that you understand this action is permanent.');
+                confirmCheck.focus();
+                return;
+            }
+
+            if (confirm('⚠️ FINAL WARNING: Are you absolutely sure you want to deactivate your account?\n\nThis action cannot be undone!')) {
+                // Show loading state
+                const button = document.getElementById('deactivateBtn');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Deactivating...';
+                button.disabled = true;
+
+                // Submit the form
+                this.submit();
+            }
+        });
+    </script>
+}

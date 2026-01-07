@@ -14,5 +14,6 @@ namespace HospitalManagement.ViewModel
         public Status IsActive { get; set; }
 
         public bool IsTwoFactorEnabled { get; set; } = false;
+        public string ThemePreference { get; set; }
     }
 }
