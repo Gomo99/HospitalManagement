@@ -1,0 +1,207 @@
+﻿@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin Dashboard</h1>
+        <div>
+            <span class="badge bg-info fs-6">
+                Welcome, @Model.UserName!
+            </span>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Total Beds</h6>
+                            <h2 class="mb-0">@Model.TotalBeds</h2>
+                        </div>
+                        <i class="fas fa-bed fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Total Wards</h6>
+                            <h2 class="mb-0">@Model.TotalWards</h2>
+                        </div>
+                        <i class="fas fa-hospital fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Total Employees</h6>
+                            <h2 class="mb-0">@Model.TotalEmployees</h2>
+                        </div>
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Total Medications</h6>
+                            <h2 class="mb-0">@Model.TotalMedications</h2>
+                        </div>
+                        <i class="fas fa-pills fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row of Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Active Allergies</h6>
+                            <h2 class="mb-0">@Model.ActiveAllergies</h2>
+                        </div>
+                        <i class="fas fa-allergies fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card bg-secondary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Total Consumables</h6>
+                            <h2 class="mb-0">@Model.TotalConsumables</h2>
+                        </div>
+                        <i class="fas fa-box fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-12 mb-3">
+            <div class="card bg-dark text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Unread Notifications</h6>
+                            <h2 class="mb-0">@ViewData["UnreadNotificationCount"]</h2>
+                        </div>
+                        <i class="fas fa-bell fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Logins Chart -->
+    @if (Model.WeeklyLogins != null && Model.WeeklyLogins.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Weekly Login Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative; height: 300px;">
+                    <canvas id="loginChart"></canvas>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Quick Links -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Quick Management Links</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <a asp-action="ListOfEmployees" class="btn btn-outline-primary btn-block">
+                        <i class="fas fa-users me-2"></i>Employees
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a asp-action="ListOfPatients" class="btn btn-outline-success btn-block">
+                        <i class="fas fa-user-injured me-2"></i>Patients
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a asp-action="ListOfWards" class="btn btn-outline-info btn-block">
+                        <i class="fas fa-hospital me-2"></i>Wards
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a asp-action="ListOfBeds" class="btn btn-outline-warning btn-block">
+                        <i class="fas fa-bed me-2"></i>Beds
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @if (Model.WeeklyLogins != null && Model.WeeklyLogins.Any())
+    {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const ctx = document.getElementById('loginChart').getContext('2d');
+            const loginChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.WeeklyLogins.Select(l => l.Date))),
+                    datasets: [{
+                        label: 'Daily Logins',
+                        data: @Html.Raw(Json.Serialize(Model.WeeklyLogins.Select(l => l.Count))),
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    }
+}

@@ -1,0 +1,91 @@
+﻿@model IEnumerable<HospitalInfo>
+@{
+    ViewData["Title"] = "Hospital Information";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Hospital Information Management</h1>
+        <a asp-action="AddHospitalInfos" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Hospital
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Active Hospitals</h5>
+            <div>
+                <a asp-action="DeletedHospitalInfos" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-trash"></i> View Deleted
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Hospital Name</th>
+                                <th>Address</th>
+                                <th>Phone Number</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var hospital in Model)
+                            {
+                                <tr>
+                                    <td>@hospital.HospitalInfoId</td>
+                                    <td>@hospital.HospitalName</td>
+                                    <td>@hospital.Address</td>
+                                    <td>@hospital.PhoneNumber</td>
+                                    <td>@hospital.Email</td>
+                                    <td>
+                                        <span class="badge bg-@(hospital.HospitalInfoStatus == Status.Active ? "success" : "danger")">
+                                            @hospital.HospitalInfoStatus
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="DetailsOfHospitalInfos" asp-route-id="@hospital.HospitalInfoId"
+                                               class="btn btn-sm btn-info me-1" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-action="EditHospitalInfos" asp-route-id="@hospital.HospitalInfoId"
+                                               class="btn btn-sm btn-warning me-1" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-action="DeleteHospitalInfos" asp-route-id="@hospital.HospitalInfoId"
+                                               class="btn btn-sm btn-danger" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No hospital information found. <a asp-action="AddHospitalInfos">Add a new hospital</a>.
+                </div>
+            }
+        </div>
+    </div>
+</div>

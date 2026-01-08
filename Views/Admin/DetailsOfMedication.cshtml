@@ -1,0 +1,77 @@
+﻿@model Medication
+@{
+    ViewData["Title"] = "Medication Details";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Medication Details</h1>
+        <div>
+            <a asp-action="EditMedication" asp-route-id="@Model.MedicationId" class="btn btn-warning me-2">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="ListOfMedication" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Medication Information</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Medication ID:</dt>
+                <dd class="col-sm-9">@Model.MedicationId</dd>
+
+                <dt class="col-sm-3">Medication Name:</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Type:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-info">@Model.Type</span>
+                </dd>
+
+                <dt class="col-sm-3">Quantity:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@(Model.Quantity > 50 ? "success" : Model.Quantity > 10 ? "warning" : "danger")">
+                        @Model.Quantity units
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Expiry Date:</dt>
+                <dd class="col-sm-9">
+                    <span class="@(Model.ExpiryDate < DateTime.Now.AddDays(60) ? "text-danger fw-bold" : "")">
+                        @Model.ExpiryDate.ToString("yyyy-MM-dd")
+                        @if (Model.ExpiryDate < DateTime.Now)
+                        {
+                            <span class="badge bg-danger ms-2">EXPIRED</span>
+                        }
+                        else if (Model.ExpiryDate < DateTime.Now.AddDays(60))
+                        {
+                            <span class="badge bg-warning ms-2">EXPIRING SOON</span>
+                        }
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Description:</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Description) ? "No description" : Model.Description)</dd>
+
+                <dt class="col-sm-3">Status:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@(Model.MedicationStatus == Status.Active ? "success" : "danger")">
+                        @Model.MedicationStatus
+                    </span>
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="ListOfMedication" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Medications List
+        </a>
+    </div>
+</div>

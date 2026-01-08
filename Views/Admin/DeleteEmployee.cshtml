@@ -1,0 +1,87 @@
+﻿@model Employee
+@{
+    ViewData["Title"] = "Delete Employee";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Delete Employee</h1>
+        <a asp-action="ListOfEmployees" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Confirm Employee Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">
+                    <i class="fas fa-exclamation-triangle"></i> Important Warning!
+                </h5>
+                <p>Are you sure you want to delete this employee? This action will:</p>
+                <ul>
+                    <li>Mark the employee account as deleted (soft delete)</li>
+                    <li>Prevent the employee from logging in</li>
+                    <li>Preserve historical data associated with this employee</li>
+                </ul>
+                <p class="mb-0"><strong>Note:</strong> This does not permanently delete the employee record.</p>
+            </div>
+
+            <h5>Employee Details</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Employee ID:</dt>
+                <dd class="col-sm-9">@Model.EmployeeID</dd>
+
+                <dt class="col-sm-3">Full Name:</dt>
+                <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+
+                <dt class="col-sm-3">Username:</dt>
+                <dd class="col-sm-9">@Model.UserName</dd>
+
+                <dt class="col-sm-3">Email:</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <dt class="col-sm-3">Role:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@GetRoleBadgeColor(Model.Role)">
+                        @Model.Role
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Current Status:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-success">@Model.IsActive</span>
+                </dd>
+            </dl>
+
+            <form asp-action="DeleteEmployeeConfirmed" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="EmployeeID" />
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-danger me-md-2" 
+                            onclick="return confirm('Are you absolutely sure? This will deactivate the employee account.')">
+                        <i class="fas fa-trash"></i> Confirm Delete
+                    </button>
+                    <a asp-action="ListOfEmployees" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetRoleBadgeColor(UserRole role)
+    {
+        return role switch
+        {
+            UserRole.ADMINISTRATOR => "danger",
+            UserRole.DOCTOR => "primary",
+            UserRole.NURSE => "success",
+            UserRole.WARDADMIN => "warning",
+            _ => "secondary"
+        };
+    }
+}

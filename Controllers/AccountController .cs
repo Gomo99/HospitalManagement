@@ -827,7 +827,7 @@ namespace HospitalManagement.Controllers
 
 
 
-
+        [Authorize]
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> DownloadProfilePdf()
@@ -884,6 +884,7 @@ namespace HospitalManagement.Controllers
 
         // In AccountController.cs
         [HttpGet]
+        [Authorize]
         public IActionResult VerifyTwoFactor()
         {
             var userIdStr = HttpContext.Session.GetString("TempUserId");
@@ -895,6 +896,7 @@ namespace HospitalManagement.Controllers
             return View(new VerifyTwoFactorViewModel());
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyTwoFactor(VerifyTwoFactorViewModel model)

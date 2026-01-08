@@ -1,0 +1,152 @@
+﻿@model EditAdmissionViewModel
+@{
+    ViewData["Title"] = "Edit Admission";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Admission</h1>
+        <a asp-action="AdmittedPatients" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <!-- Display TempData messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form asp-action="EditAdmission" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="AdmissionId" />
+        <input type="hidden" asp-for="PatientId" />
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Medical Team</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="SelectedDoctorId" class="form-label">Doctor *</label>
+                            <select asp-for="SelectedDoctorId" asp-items="@(new SelectList(Model.DoctorOptions, "EmployeeID", "FullName"))"
+                                    class="form-select" required>
+                                <option value="">-- Select Doctor --</option>
+                            </select>
+                            <span asp-validation-for="SelectedDoctorId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="SelectedNurseId" class="form-label">Nurse</label>
+                            <select asp-for="SelectedNurseId" asp-items="@(new SelectList(Model.NurseOptions, "EmployeeID", "FullName"))"
+                                    class="form-select">
+                                <option value="">-- Select Nurse --</option>
+                            </select>
+                            <span asp-validation-for="SelectedNurseId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Allergies Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Allergies</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var allergy in Model.AllergyOptions)
+                    {
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="SelectedAllergyIds"
+                                       value="@allergy.AllergyId"
+                                       id="allergy_@allergy.AllergyId"
+                                       @(Model.SelectedAllergyIds.Contains(allergy.AllergyId) ? "checked" : "")>
+                                <label class="form-check-label" for="allergy_@allergy.AllergyId">
+                                    @allergy.Name
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Medications Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Medications</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var medication in Model.MedicationOptions)
+                    {
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="SelectedMedicationIds"
+                                       value="@medication.MedicationId"
+                                       id="medication_@medication.MedicationId"
+                                       @(Model.SelectedMedicationIds.Contains(medication.MedicationId) ? "checked" : "")>
+                                <label class="form-check-label" for="medication_@medication.MedicationId">
+                                    @medication.Name
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Conditions Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Medical Conditions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var condition in Model.ConditionOptions)
+                    {
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="SelectedConditionIds"
+                                       value="@condition.ConditionId"
+                                       id="condition_@condition.ConditionId"
+                                       @(Model.SelectedConditionIds.Contains(condition.ConditionId) ? "checked" : "")>
+                                <label class="form-check-label" for="condition_@condition.ConditionId">
+                                    @condition.Name
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Update Admission
+            </button>
+            <a asp-action="AdmittedPatients" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

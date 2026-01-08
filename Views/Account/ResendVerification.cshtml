@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "Resend Verification Email";
+    Layout = "_Layout"; // Or your layout file
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-envelope me-2"></i>Resend Verification Email
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>Didn't receive the verification email?
+                        </h5>
+                        <p class="mb-0">
+                            Enter your email address below and we'll send you a new verification link.
+                        </p>
+                    </div>
+
+                    <form asp-action="ResendVerification" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="mb-4">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input type="email" name="email" class="form-control" 
+                                       placeholder="Enter your registered email address" required />
+                            </div>
+                            <div class="form-text">
+                                <small class="text-muted">Enter the email address you used during registration.</small>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Resend Verification Email
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4">
+                        <h6 class="text-muted">
+                            <i class="fas fa-question-circle me-2"></i>Need Help?
+                        </h6>
+                        <ul class="list-unstyled ps-3">
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Check your spam or junk folder
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Make sure you entered the correct email address
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Contact support if you continue to have issues
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col">
+                            <a asp-action="Login" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Login
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a asp-action="ForgotPassword" class="btn btn-outline-info w-100">
+                                <i class="fas fa-key me-1"></i>Forgot Password?
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Focus on email input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailInput = document.querySelector('input[name="email"]');
+            if (emailInput) {
+                emailInput.focus();
+            }
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const emailInput = document.querySelector('input[name="email"]');
+            const email = emailInput.value.trim();
+            
+            if (!email) {
+                event.preventDefault();
+                showAlert('Please enter your email address.', 'danger');
+                emailInput.focus();
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                event.preventDefault();
+                showAlert('Please enter a valid email address.', 'danger');
+                emailInput.focus();
+                return;
+            }
+        });
+
+        function isValidEmail(email) {
+            return emailRegex.test(email);
+        }
+
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.alert-dismissible');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Create new alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Insert alert at the top of the card body
+            const cardBody = document.querySelector('.card-body');
+            if (cardBody.firstChild) {
+                cardBody.insertBefore(alertDiv, cardBody.firstChild);
+            } else {
+                cardBody.appendChild(alertDiv);
+            }
+            
+            // Auto dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+    </script>
+}

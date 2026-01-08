@@ -1,0 +1,168 @@
+﻿@model IEnumerable<WardListItemVm>
+@{
+    ViewData["Title"] = "Ward Management";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Ward Management</h1>
+        <div>
+            <a asp-action="AddWard" class="btn btn-primary me-2">
+                <i class="fas fa-plus"></i> Add New Ward
+            </a>
+            <a asp-action="WardReport" class="btn btn-secondary">
+                <i class="fas fa-file-pdf"></i> Generate Report
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Active Wards</h5>
+            <div>
+                <a asp-action="DeletedWard" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-trash"></i> View Deleted
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAllWards" />
+                                </th>
+                                <th>ID</th>
+                                <th>Ward Name</th>
+                                <th>Description</th>
+                                <th>Capacity</th>
+                                <th>Active Beds</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ward in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="select-ward-item" value="@ward.WardId" />
+                                    </td>
+                                    <td>@ward.WardId</td>
+                                    <td>@ward.WardName</td>
+                                    <td>@(string.IsNullOrEmpty(ward.Description) ? "-" : ward.Description)</td>
+                                    <td>@ward.Capacity</td>
+                                    <td>
+                                        <span class="badge bg-@(ward.ActiveBeds < ward.Capacity ? "success" : "danger")">
+                                            @ward.ActiveBeds / @ward.Capacity
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-@(ward.WardStatus == Status.Active ? "success" : "danger")">
+                                            @ward.WardStatus
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="DetailsOfWards" asp-route-id="@ward.WardId"
+                                               class="btn btn-sm btn-info me-1" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-action="EditWard" asp-route-id="@ward.WardId"
+                                               class="btn btn-sm btn-warning me-1" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-action="DeleteWard" asp-route-id="@ward.WardId"
+                                               class="btn btn-sm btn-danger" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3">
+                    <button id="bulkDeleteWardsBtn" class="btn btn-danger me-2" disabled>
+                        <i class="fas fa-trash"></i> Delete Selected
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No wards found. <a asp-action="AddWard">Add a new ward</a>.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Select All functionality for wards
+        document.getElementById('selectAllWards').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.select-ward-item');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            updateBulkWardButtons();
+        });
+
+        // Update bulk buttons
+        function updateBulkWardButtons() {
+            const selected = document.querySelectorAll('.select-ward-item:checked');
+            const deleteBtn = document.getElementById('bulkDeleteWardsBtn');
+
+            deleteBtn.disabled = selected.length === 0;
+        }
+
+        // Attach event listeners
+        document.querySelectorAll('.select-ward-item').forEach(cb => {
+            cb.addEventListener('change', updateBulkWardButtons);
+        });
+
+        // Bulk Delete functionality for wards
+        document.getElementById('bulkDeleteWardsBtn').addEventListener('click', function() {
+            const selectedIds = Array.from(document.querySelectorAll('.select-ward-item:checked'))
+                .map(cb => parseInt(cb.value));
+
+            if (selectedIds.length === 0) return;
+
+            if (confirm(`Are you sure you want to delete ${selectedIds.length} selected ward(s)?`)) {
+                fetch('@Url.Action("DeleteMultipleWards", "Admin")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(selectedIds)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting wards.');
+                });
+            }
+        });
+    </script>
+}

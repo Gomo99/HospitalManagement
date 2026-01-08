@@ -1,0 +1,95 @@
+﻿@model Bed
+@{
+    ViewData["Title"] = "Bed Details";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Bed Details</h1>
+        <div>
+            <a asp-action="EditBeds" asp-route-id="@Model.BedId" class="btn btn-warning me-2">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="ListOfBeds" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Bed Information</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Bed ID:</dt>
+                <dd class="col-sm-9">@Model.BedId</dd>
+
+                <dt class="col-sm-3">Bed Number:</dt>
+                <dd class="col-sm-9">@Model.BedNumber</dd>
+
+                <dt class="col-sm-3">Ward:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Ward != null)
+                    {
+                        <span class="badge bg-info">@Model.Ward.WardName</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">No ward assigned</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Bed Status:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@(Model.Status == BedStatus.Available ? "success" : "danger")">
+                        @Model.Status
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Record Status:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@(Model.BedStatus == Status.Active ? "success" : "secondary")">
+                        @Model.BedStatus
+                    </span>
+                </dd>
+
+              
+            </dl>
+        </div>
+    </div>
+
+    @if (Model.Ward != null)
+    {
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Ward Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Ward Name:</dt>
+                    <dd class="col-sm-9">@Model.Ward.WardName</dd>
+
+                    <dt class="col-sm-3">Ward Description:</dt>
+                    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Ward.Description) ? "No description" : Model.Ward.Description)</dd>
+
+                    <dt class="col-sm-3">Ward Capacity:</dt>
+                    <dd class="col-sm-9">@Model.Ward.Capacity beds</dd>
+
+                    <dt class="col-sm-3">Ward Status:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-@(Model.Ward.WardStatus == Status.Active ? "success" : "danger")">
+                            @Model.Ward.WardStatus
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    }
+
+    <div class="mt-3">
+        <a asp-action="ListOfBeds" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Beds List
+        </a>
+    </div>
+</div>

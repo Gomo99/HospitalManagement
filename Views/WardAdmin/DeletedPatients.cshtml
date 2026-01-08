@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Patient>
+@{
+    ViewData["Title"] = "Deleted Patients";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Deleted Patients</h1>
+        <a asp-action="Patients" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Active Patients
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Deleted Patient Records</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>ID Number</th>
+                                <th>Date of Birth</th>
+                                <th>Gender</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var patient in Model)
+                            {
+                                <tr>
+                                    <td>@patient.PatientId</td>
+                                    <td>@patient.FirstName @patient.LastName</td>
+                                    <td>@patient.IdNumber</td>
+                                    <td>@patient.DOB.ToShortDateString()</td>
+                                    <td>@patient.Gender</td>
+                                    <td>
+                                        <form asp-action="RestorePatient" asp-route-id="@patient.PatientId" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-success"
+                                                    onclick="return confirm('Are you sure you want to restore this patient?')">
+                                                <i class="fas fa-trash-restore"></i> Restore
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No deleted patient records found.
+                </div>
+            }
+        </div>
+    </div>
+</div>

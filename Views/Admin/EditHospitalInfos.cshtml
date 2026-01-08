@@ -1,0 +1,82 @@
+﻿@model HospitalInfo
+@{
+    ViewData["Title"] = "Edit Hospital";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Hospital Information</h1>
+        <a asp-action="ListOfHospitalInfos" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Edit Hospital Details</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditHospitalInfos" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="HospitalInfoId" />
+
+                <div class="mb-3">
+                    <label asp-for="HospitalName" class="form-label">Hospital Name *</label>
+                    <input asp-for="HospitalName" class="form-control" required />
+                    <span asp-validation-for="HospitalName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label">Address *</label>
+                    <textarea asp-for="Address" class="form-control" rows="2" required></textarea>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number *</label>
+                            <input asp-for="PhoneNumber" class="form-control" required />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email *</label>
+                            <input asp-for="Email" class="form-control" type="email" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WebsiteUrl" class="form-label">Website URL</label>
+                    <input asp-for="WebsiteUrl" class="form-control" type="url" />
+                    <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary me-md-2">
+                        <i class="fas fa-save"></i> Update Hospital
+                    </button>
+                    <a asp-action="ListOfHospitalInfos" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

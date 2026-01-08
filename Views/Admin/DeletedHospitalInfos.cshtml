@@ -1,0 +1,74 @@
+﻿@model IEnumerable<HospitalInfo>
+@{
+    ViewData["Title"] = "Deleted Hospitals";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Deleted Hospitals</h1>
+        <div>
+            <a asp-action="ListOfHospitalInfos" class="btn btn-primary me-2">
+                <i class="fas fa-list"></i> Active Hospitals
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Deleted Hospital Records</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Hospital Name</th>
+                                <th>Address</th>
+                                <th>Phone Number</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var hospital in Model)
+                            {
+                                <tr>
+                                    <td>@hospital.HospitalInfoId</td>
+                                    <td>@hospital.HospitalName</td>
+                                    <td>@hospital.Address</td>
+                                    <td>@hospital.PhoneNumber</td>
+                                    <td>
+                                        <form asp-action="RestoreHospitalInfos" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@hospital.HospitalInfoId" />
+                                            <button type="submit" class="btn btn-sm btn-success" 
+                                                    onclick="return confirm('Restore this hospital?')">
+                                                <i class="fas fa-trash-restore"></i> Restore
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No deleted hospitals found.
+                </div>
+            }
+        </div>
+    </div>
+</div>

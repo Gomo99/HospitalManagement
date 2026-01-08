@@ -1,0 +1,70 @@
+﻿@model BedAssignment
+@{
+    ViewData["Title"] = "Discharge Patient";
+    var admissionId = ViewBag.AdmissionId;
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Discharge Patient</h1>
+        <a asp-action="BedAssignmentsList" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Assignments
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Confirm Patient Discharge</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <h5 class="alert-heading">
+                    <i class="fas fa-info-circle"></i> Important Information
+                </h5>
+                <p>
+                    This action will:
+                    <ul>
+                        <li>Mark the patient as <strong>Discharged</strong></li>
+                        <li>Mark the bed assignment as <strong>Deleted</strong></li>
+                        <li>Set the bed status to <strong>Available</strong></li>
+                        <li><strong>Note:</strong> The admission record will remain active</li>
+                    </ul>
+                </p>
+            </div>
+
+            <h5>Patient Details</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Patient:</dt>
+                <dd class="col-sm-9">@Model.Patient?.FullName</dd>
+
+                <dt class="col-sm-3">Patient ID:</dt>
+                <dd class="col-sm-9">@Model.PatientId</dd>
+
+                <dt class="col-sm-3">Current Bed:</dt>
+                <dd class="col-sm-9">@Model.Bed?.BedNumber</dd>
+
+                <dt class="col-sm-3">Ward:</dt>
+                <dd class="col-sm-9">@Model.Bed?.Ward?.WardName</dd>
+
+                <dt class="col-sm-3">Assigned Date:</dt>
+                <dd class="col-sm-9">@Model.AssignedDate.ToShortDateString()</dd>
+
+                <dt class="col-sm-3">Admission ID:</dt>
+                <dd class="col-sm-9">@admissionId</dd>
+            </dl>
+
+            <form asp-action="DischargePatientConfirmed" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@admissionId" />
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-info me-md-2"
+                            onclick="return confirm('Confirm discharge for @Model.Patient?.FullName?')">
+                        <i class="fas fa-sign-out-alt"></i> Confirm Discharge
+                    </button>
+                    <a asp-action="BedAssignmentsList" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

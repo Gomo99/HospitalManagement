@@ -1,0 +1,86 @@
+﻿@model Bed
+@{
+    ViewData["Title"] = "Delete Bed";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Delete Bed</h1>
+        <a asp-action="ListOfBeds" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">
+                    <i class="fas fa-exclamation-triangle"></i> Important Warning!
+                </h5>
+                <p>Are you sure you want to delete this bed? This action will mark the bed as deleted (soft delete).</p>
+                <ul>
+                    <li>If the bed is currently occupied, you should discharge the patient first</li>
+                    <li>This bed will no longer be available for new assignments</li>
+                    <li>Historical data will be preserved</li>
+                </ul>
+            </div>
+
+            <h5>Bed Details</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Bed ID:</dt>
+                <dd class="col-sm-9">@Model.BedId</dd>
+
+                <dt class="col-sm-3">Bed Number:</dt>
+                <dd class="col-sm-9">@Model.BedNumber</dd>
+
+                <dt class="col-sm-3">Ward:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Ward != null)
+                    {
+                        <span class="badge bg-info">@Model.Ward.WardName</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">No ward assigned</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Current Status:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@(Model.Status == BedStatus.Available ? "success" : "danger")">
+                        @Model.Status
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Record Status:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-success">@Model.BedStatus</span>
+                </dd>
+            </dl>
+
+            @if (Model.Status == BedStatus.Occupied)
+            {
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> This bed is currently occupied. Please discharge the patient before deleting.
+                </div>
+            }
+
+            <form asp-action="DeleteBedConfirmed" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="BedId" />
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-danger me-md-2"
+                            onclick="return confirm('Are you absolutely sure? This action cannot be undone.')"
+                            @(Model.Status == BedStatus.Occupied ? "disabled" : "")>
+                        <i class="fas fa-trash"></i> Confirm Delete
+                    </button>
+                    <a asp-action="ListOfBeds" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

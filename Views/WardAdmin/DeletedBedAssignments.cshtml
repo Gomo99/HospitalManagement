@@ -1,0 +1,82 @@
+﻿@model IEnumerable<BedAssignment>
+@{
+    ViewData["Title"] = "Deleted Bed Assignments";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Deleted Bed Assignments</h1>
+        <a asp-action="BedAssignmentsList" class="btn btn-primary">
+            <i class="fas fa-bed"></i> Active Assignments
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Deleted Assignments</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Assignment ID</th>
+                                <th>Patient</th>
+                                <th>Bed Number</th>
+                                <th>Ward</th>
+                                <th>Assigned Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var assignment in Model)
+                            {
+                                <tr>
+                                    <td>@assignment.AssignmentId</td>
+                                    <td>@assignment.Patient?.FullName</td>
+                                    <td>@assignment.Bed?.BedNumber</td>
+                                    <td>@assignment.Bed?.Ward?.WardName</td>
+                                    <td>@assignment.AssignedDate.ToShortDateString()</td>
+                                    <td>
+                                        <form asp-action="RestoreBedAssignment" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@assignment.AssignmentId" />
+                                            <button type="submit" class="btn btn-sm btn-success"
+                                                    onclick="return confirm('Restore this bed assignment?')">
+                                                <i class="fas fa-trash-restore"></i> Restore
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No deleted bed assignments found.
+                </div>
+            }
+        </div>
+    </div>
+</div>

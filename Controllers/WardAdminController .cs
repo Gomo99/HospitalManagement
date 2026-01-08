@@ -383,7 +383,9 @@ namespace HospitalManagement.Controllers
                     Cellphone = p.Cellphone,
                     AdmissionDate = latestAdmission?.AdmissionDate ?? DateTime.MinValue,
                     AdmissionId = latestAdmission?.AdmissionId ?? 0,
-                    AdmissionStatus = latestAdmission?.AdmissionStatus ?? Status.Delete,
+                    AdmissionStatus = latestAdmission != null
+    ? (AdmissionStatus)latestAdmission.AdmissionStatus
+    : AdmissionStatus.Discharged,
 
                     // ✅ map doctor and nurse names
                     DoctorName = latestAdmission?.Doctor != null
@@ -1485,6 +1487,70 @@ namespace HospitalManagement.Controllers
             TempData["SuccessMessage"] = $"Patient {patient.FullName} has been restored.";
             return RedirectToAction("DischargedPatients");
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,72 @@
+﻿@model AssignBedViewModel
+@{
+    ViewData["Title"] = "Assign Bed to Patient";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Assign Bed</h1>
+        <a asp-action="BedAssignmentsList" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Assignments
+        </a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Assign Bed to Patient</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="AssignBed" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Patient:</dt>
+                            <dd class="col-sm-8">@Model.FullName</dd>
+
+                            <dt class="col-sm-4">Patient ID:</dt>
+                            <dd class="col-sm-8">@Model.PatientId</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="BedId" class="form-label">Select Bed *</label>
+                    <select asp-for="BedId" asp-items="Model.AvailableBeds"
+                            class="form-select" required>
+                        <option value="">-- Select a Bed --</option>
+                    </select>
+                    <span asp-validation-for="BedId" class="text-danger"></span>
+                    <small class="form-text text-muted">
+                        Available beds are displayed with their ward information.
+                    </small>
+                </div>
+
+                <input type="hidden" asp-for="PatientId" />
+                <input type="hidden" asp-for="AssignmentId" />
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary me-md-2">
+                        <i class="fas fa-bed"></i> Assign Bed
+                    </button>
+                    <a asp-action="BedAssignmentsList" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

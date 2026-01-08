@@ -1,0 +1,165 @@
+﻿@model IEnumerable<Employee>
+@{
+    ViewData["Title"] = "Deleted Employees";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Deleted Employees</h1>
+        <div>
+            <a asp-action="ListOfEmployees" class="btn btn-primary me-2">
+                <i class="fas fa-list"></i> Active Employees
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Deleted Employee Records</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAllDeletedEmployees" />
+                                </th>
+                                <th>ID</th>
+                                <th>Full Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var employee in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="select-deleted-employee" value="@employee.EmployeeID" />
+                                    </td>
+                                    <td>@employee.EmployeeID</td>
+                                    <td>@employee.FirstName @employee.LastName</td>
+                                    <td>@employee.UserName</td>
+                                    <td>@employee.Email</td>
+                                    <td>
+                                        <span class="badge bg-@GetRoleBadgeColor(employee.Role)">
+                                            @employee.Role
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form asp-action="RestoreEmployee" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@employee.EmployeeID" />
+                                            <button type="submit" class="btn btn-sm btn-success" 
+                                                    onclick="return confirm('Restore this employee?')">
+                                                <i class="fas fa-trash-restore"></i> Restore
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3">
+                    <button id="bulkRestoreEmployeesBtn" class="btn btn-success" disabled>
+                        <i class="fas fa-trash-restore"></i> Restore Selected
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No deleted employees found.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetRoleBadgeColor(UserRole role)
+    {
+        return role switch
+        {
+            UserRole.ADMINISTRATOR => "danger",
+            UserRole.DOCTOR => "primary",
+            UserRole.NURSE => "success",
+            UserRole.WARDADMIN => "warning",
+            _ => "secondary"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        // Select All functionality for deleted employees
+        document.getElementById('selectAllDeletedEmployees').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.select-deleted-employee');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            updateBulkRestoreEmployeesButton();
+        });
+
+        // Update bulk restore button
+        function updateBulkRestoreEmployeesButton() {
+            const selected = document.querySelectorAll('.select-deleted-employee:checked');
+            const restoreBtn = document.getElementById('bulkRestoreEmployeesBtn');
+            
+            restoreBtn.disabled = selected.length === 0;
+        }
+
+        // Attach event listeners
+        document.querySelectorAll('.select-deleted-employee').forEach(cb => {
+            cb.addEventListener('change', updateBulkRestoreEmployeesButton);
+        });
+
+        // Bulk Restore functionality for deleted employees
+        document.getElementById('bulkRestoreEmployeesBtn').addEventListener('click', function() {
+            const selectedIds = Array.from(document.querySelectorAll('.select-deleted-employee:checked'))
+                .map(cb => parseInt(cb.value));
+            
+            if (selectedIds.length === 0) return;
+            
+            if (confirm(`Are you sure you want to restore ${selectedIds.length} selected employee(s)?`)) {
+                // Create form and submit
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("BulkRestoreEmployees", "Admin")';
+                
+                // Add anti-forgery token
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token;
+                form.appendChild(tokenInput);
+                
+                // Add employee IDs
+                selectedIds.forEach(id => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids';
+                    input.value = id;
+                    form.appendChild(input);
+                });
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    </script>
+}

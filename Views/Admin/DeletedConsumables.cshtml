@@ -1,0 +1,146 @@
+﻿@model IEnumerable<Consumable>
+@{
+    ViewData["Title"] = "Deleted Consumables";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Deleted Consumables</h1>
+        <div>
+            <a asp-action="ListOfConsumables" class="btn btn-primary me-2">
+                <i class="fas fa-list"></i> Active Consumables
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Deleted Consumable Records</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAllDeletedConsumables" />
+                                </th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                                <th>Expiry Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="select-deleted-consumable" value="@item.ConsumableId" />
+                                    </td>
+                                    <td>@item.ConsumableId</td>
+                                    <td>@item.Name</td>
+                                    <td>
+                                        <span class="badge bg-info">@item.Type</span>
+                                    </td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.ExpiryDate.ToString("yyyy-MM-dd")</td>
+\                                    <td>
+                                        <form asp-action="RestoreConsumables" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@item.ConsumableId" />
+                                            <button type="submit" class="btn btn-sm btn-success"
+                                                    onclick="return confirm('Restore this consumable?')">
+                                                <i class="fas fa-trash-restore"></i> Restore
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3">
+                    <button id="bulkRestoreConsumablesBtn" class="btn btn-success" disabled>
+                        <i class="fas fa-trash-restore"></i> Restore Selected
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No deleted consumables found.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Select All functionality for deleted consumables
+        document.getElementById('selectAllDeletedConsumables').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.select-deleted-consumable');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            updateBulkRestoreConsumablesButton();
+        });
+
+        // Update bulk restore button
+        function updateBulkRestoreConsumablesButton() {
+            const selected = document.querySelectorAll('.select-deleted-consumable:checked');
+            const restoreBtn = document.getElementById('bulkRestoreConsumablesBtn');
+
+            restoreBtn.disabled = selected.length === 0;
+        }
+
+        // Attach event listeners
+        document.querySelectorAll('.select-deleted-consumable').forEach(cb => {
+            cb.addEventListener('change', updateBulkRestoreConsumablesButton);
+        });
+
+        // Bulk Restore functionality for deleted consumables
+        document.getElementById('bulkRestoreConsumablesBtn').addEventListener('click', function() {
+            const selectedIds = Array.from(document.querySelectorAll('.select-deleted-consumable:checked'))
+                .map(cb => parseInt(cb.value));
+
+            if (selectedIds.length === 0) return;
+
+            if (confirm(`Are you sure you want to restore ${selectedIds.length} selected consumable(s)?`)) {
+                fetch('@Url.Action("BulkRestoreConsumables", "Admin")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(selectedIds)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while restoring consumables.');
+                });
+            }
+        });
+    </script>
+}

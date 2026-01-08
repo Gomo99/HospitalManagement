@@ -1,0 +1,65 @@
+﻿@model Consumable
+@{
+    ViewData["Title"] = "Delete Consumable";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Delete Consumable</h1>
+        <a asp-action="ListOfConsumables" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">
+                    <i class="fas fa-exclamation-triangle"></i> Warning!
+                </h5>
+                <p>Are you sure you want to delete this consumable? This action will mark it as deleted (soft delete).</p>
+            </div>
+
+            <h5>Consumable Details</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Consumable ID:</dt>
+                <dd class="col-sm-9">@Model.ConsumableId</dd>
+
+                <dt class="col-sm-3">Name:</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Type:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-info">@Model.Type</span>
+                </dd>
+
+                <dt class="col-sm-3">Quantity:</dt>
+                <dd class="col-sm-9">@Model.Quantity units</dd>
+
+                <dt class="col-sm-3">Expiry Date:</dt>
+                <dd class="col-sm-9">@Model.ExpiryDate.ToString("yyyy-MM-dd")</dd>
+
+                <dt class="col-sm-3">Current Status:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-success">@Model.ConsumableStatus</span>
+                </dd>
+            </dl>
+
+            <form asp-action="DeleteConsumableConfirm" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ConsumableId" />
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-danger me-md-2"
+                            onclick="return confirm('Are you absolutely sure? This action cannot be undone.')">
+                        <i class="fas fa-trash"></i> Confirm Delete
+                    </button>
+                    <a asp-action="ListOfConsumables" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

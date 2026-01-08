@@ -1,0 +1,173 @@
+﻿@model Patient
+@{
+    ViewData["Title"] = "Patient Details";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Patient Details</h1>
+        <div>
+            <a asp-action="AdmittedPatients" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Admissions
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Personal Information Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Personal Information</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Patient ID:</dt>
+                <dd class="col-sm-9">@Model.PatientId</dd>
+
+                <dt class="col-sm-3">Full Name:</dt>
+                <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+
+                <dt class="col-sm-3">ID Number:</dt>
+                <dd class="col-sm-9">@Model.IdNumber</dd>
+
+                <dt class="col-sm-3">Date of Birth:</dt>
+                <dd class="col-sm-9">@Model.DOB.ToLongDateString()</dd>
+
+                <dt class="col-sm-3">Age:</dt>
+                <dd class="col-sm-9">@(DateTime.Now.Year - Model.DOB.Year)</dd>
+
+                <dt class="col-sm-3">Gender:</dt>
+                <dd class="col-sm-9">@Model.Gender</dd>
+
+                <dt class="col-sm-3">Cellphone:</dt>
+                <dd class="col-sm-9">@Model.Cellphone</dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Allergies Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Allergies</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.PatientAllergies != null && Model.PatientAllergies.Any())
+            {
+                <div class="row">
+                    @foreach (var allergy in Model.PatientAllergies)
+                    {
+                        <div class="col-md-3 mb-2">
+                            <span class="badge bg-danger p-2">
+                                <i class="fas fa-allergies"></i> @allergy.Allergy?.Name
+                            </span>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No allergies recorded.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Medications Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Current Medications</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.PatientMedications != null && Model.PatientMedications.Any())
+            {
+                <div class="row">
+                    @foreach (var med in Model.PatientMedications)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h6 class="card-title">@med.Medication?.Name</h6>
+                                    <p class="card-text small">
+                                        <strong>Status:</strong> @med.Status
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No medications recorded.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Medical Conditions Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Medical Conditions</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.PatientConditions != null && Model.PatientConditions.Any())
+            {
+                <div class="row">
+                    @foreach (var condition in Model.PatientConditions)
+                    {
+                        <div class="col-md-3 mb-2">
+                            <span class="badge bg-warning text-dark p-2">
+                                <i class="fas fa-stethoscope"></i> @condition.Condition?.Name
+                            </span>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No medical conditions recorded.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Admissions History Card -->
+    @if (Model.Admissions != null && Model.Admissions.Any(a => a.AdmissionStatus == Status.Active))
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Current Admission</h5>
+            </div>
+            <div class="card-body">
+                @foreach (var admission in Model.Admissions.Where(a => a.AdmissionStatus == Status.Active))
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Admission Date:</dt>
+                                <dd class="col-sm-8">@admission.AdmissionDate.ToLongDateString()</dd>
+
+                                <dt class="col-sm-4">Doctor:</dt>
+                                <dd class="col-sm-8">@admission.Doctor?.FullName</dd>
+
+                                <dt class="col-sm-4">Nurse:</dt>
+                                <dd class="col-sm-8">@admission.Nurse?.FullName</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            @if (!string.IsNullOrEmpty(admission.Notes))
+                            {
+                                <dt>Notes:</dt>
+                                <dd>@admission.Notes</dd>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

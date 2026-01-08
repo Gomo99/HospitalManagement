@@ -15,6 +15,7 @@ C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\Google.Au
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\Humanizer.dll
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\iTextSharp.LGPLv2.Core.dll
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\MailKit.dll
+C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.Google.dll
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\Microsoft.Build.Locator.dll
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\Microsoft.CodeAnalysis.dll
@@ -235,11 +236,9 @@ C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\staticweb
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\Hospital.2B9058E3.Up2Date
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\HospitalManagement.dll
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\refint\HospitalManagement.dll
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\HospitalManagement.pdb
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\HospitalManagement.genruntimeconfig.cache
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\ref\HospitalManagement.dll
-C:\Users\gomol\source\repos\Gomo99\HospitalManagement\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.Google.dll

@@ -1,0 +1,142 @@
+﻿@model IEnumerable<Ward>
+@{
+    ViewData["Title"] = "Deleted Wards";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Deleted Wards</h1>
+        <div>
+            <a asp-action="ListOfWards" class="btn btn-primary me-2">
+                <i class="fas fa-list"></i> Active Wards
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Deleted Ward Records</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAllDeletedWards" />
+                                </th>
+                                <th>ID</th>
+                                <th>Ward Name</th>
+                                <th>Description</th>
+                                <th>Capacity</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ward in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="select-deleted-ward" value="@ward.WardId" />
+                                    </td>
+                                    <td>@ward.WardId</td>
+                                    <td>@ward.WardName</td>
+                                    <td>@(string.IsNullOrEmpty(ward.Description) ? "-" : ward.Description)</td>
+                                    <td>@ward.Capacity</td>
+                                    <td>
+                                        <form asp-action="RestoreWard" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@ward.WardId" />
+                                            <button type="submit" class="btn btn-sm btn-success"
+                                                    onclick="return confirm('Restore this ward?')">
+                                                <i class="fas fa-trash-restore"></i> Restore
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3">
+                    <button id="bulkRestoreWardsBtn" class="btn btn-success" disabled>
+                        <i class="fas fa-trash-restore"></i> Restore Selected
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No deleted wards found.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Select All functionality for deleted wards
+        document.getElementById('selectAllDeletedWards').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.select-deleted-ward');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            updateBulkRestoreWardsButton();
+        });
+
+        // Update bulk restore button
+        function updateBulkRestoreWardsButton() {
+            const selected = document.querySelectorAll('.select-deleted-ward:checked');
+            const restoreBtn = document.getElementById('bulkRestoreWardsBtn');
+
+            restoreBtn.disabled = selected.length === 0;
+        }
+
+        // Attach event listeners
+        document.querySelectorAll('.select-deleted-ward').forEach(cb => {
+            cb.addEventListener('change', updateBulkRestoreWardsButton);
+        });
+
+        // Bulk Restore functionality for deleted wards
+        document.getElementById('bulkRestoreWardsBtn').addEventListener('click', function() {
+            const selectedIds = Array.from(document.querySelectorAll('.select-deleted-ward:checked'))
+                .map(cb => parseInt(cb.value));
+
+            if (selectedIds.length === 0) return;
+
+            if (confirm(`Are you sure you want to restore ${selectedIds.length} selected ward(s)?`)) {
+                fetch('@Url.Action("RestoreMultipleWards", "Admin")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(selectedIds)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while restoring wards.');
+                });
+            }
+        });
+    </script>
+}
