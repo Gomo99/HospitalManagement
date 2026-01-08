@@ -23,7 +23,12 @@ namespace HospitalManagement.Models
         public DateTime SentDate { get; set; } = DateTime.Now;
         public DateTime? ReadDate { get; set; }
 
-        public bool IsRead => ReadDate.HasValue;
+        private bool _isRead;
+        public bool IsRead
+        {
+            get => ReadDate.HasValue;
+            set => _isRead = value;
+        }
         public bool IsDeletedBySender { get; set; }
         public bool IsDeletedByReceiver { get; set; }
 

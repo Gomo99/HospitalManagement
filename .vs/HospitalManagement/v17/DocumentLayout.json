@@ -1,0 +1,214 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\views\\account\\editprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:views\\account\\editprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\hubs\\notificationhub .cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:hubs\\notificationhub .cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\models\\admission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:models\\admission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\models\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:models\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|c:\\users\\gomol\\source\\repos\\gomo99\\hospitalmanagement\\appstatus\\status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{325E5CFB-99BE-49CE-9E6F-30F2D9F09807}|HospitalManagement.csproj|solutionrelative:appstatus\\status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 11,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAJ8CAAAAAAAAAAAAAB0DAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T11:26:56.967Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e506b91c-c606-466a-90a9-123d1d1e12b3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{f96a0d64-71fd-316f-b663-924c78154f2a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EditProfile.cshtml",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Views\\Account\\EditProfile.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\EditProfile.cshtml",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Views\\Account\\EditProfile.cshtml",
+              "RelativeToolTip": "Views\\Account\\EditProfile.cshtml",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-08T13:11:49.368Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAAAF0AAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T12:50:40.393Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "NotificationHub .cs",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Hubs\\NotificationHub .cs",
+              "RelativeDocumentMoniker": "Hubs\\NotificationHub .cs",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Hubs\\NotificationHub .cs",
+              "RelativeToolTip": "Hubs\\NotificationHub .cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T12:21:56.21Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Admission.cs",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Models\\Admission.cs",
+              "RelativeDocumentMoniker": "Models\\Admission.cs",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Models\\Admission.cs",
+              "RelativeToolTip": "Models\\Admission.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAAACIAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T11:54:26.209Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-08T11:52:56.408Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Message.cs",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Models\\Message.cs",
+              "RelativeDocumentMoniker": "Models\\Message.cs",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Models\\Message.cs",
+              "RelativeToolTip": "Models\\Message.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAwwB0AAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T11:35:27.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Status.cs",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\AppStatus\\Status.cs",
+              "RelativeDocumentMoniker": "AppStatus\\Status.cs",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\AppStatus\\Status.cs",
+              "RelativeToolTip": "AppStatus\\Status.cs",
+              "ViewState": "AgIAAIwAAAAAAAAAAAAAAI4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T11:28:05.991Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Employee.cs",
+              "DocumentMoniker": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Models\\Employee.cs",
+              "RelativeDocumentMoniker": "Models\\Employee.cs",
+              "ToolTip": "C:\\Users\\gomol\\source\\repos\\Gomo99\\HospitalManagement\\Models\\Employee.cs",
+              "RelativeToolTip": "Models\\Employee.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAAAIwEQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T11:27:28.297Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

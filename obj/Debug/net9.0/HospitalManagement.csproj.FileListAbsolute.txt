@@ -242,3 +242,4 @@ C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\refint\Ho
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\HospitalManagement.pdb
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\HospitalManagement.genruntimeconfig.cache
 C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\ref\HospitalManagement.dll
+C:\Users\gomol\source\repos\Gomo99\HospitalManagement\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
