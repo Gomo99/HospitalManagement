@@ -140,6 +140,41 @@ namespace HospitalManagement.AppStatus
     }
 
 
+    public enum ScheduleType
+    {
+        Schedule1,
+        Schedule2,
+        Schedule3,
+        Schedule4,
+        Schedule5,
+        Schedule6,
+        Schedule7,
+        Unscheduled
+    }
+
+
+    public enum TreatmentType
+    {
+        IVDripChange,
+        CatheterChange,
+        WoundDressing,
+        MedicationAdministration,
+        BandageChange,
+        Injection,
+        Other
+    }
+
+    public enum TemperatureUnit
+    {
+        Celsius,
+        Fahrenheit
+    }
+
+    public enum GlucoseUnit
+    {
+        mg_dL,
+        mmol_L
+    }
 
     public enum UserRole
     {

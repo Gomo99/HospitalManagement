@@ -1,0 +1,141 @@
+﻿@model HospitalManagement.ViewModel.DoctorInstructionsViewModel
+
+@{
+    ViewData["Title"] = "Contact Doctor";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Contact Doctor</h1>
+            <p class="lead">Patient: <strong>@Model.PatientName</strong></p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="ContactDoctor" method="post">
+                <input type="hidden" asp-for="PatientId" />
+                <input type="hidden" asp-for="PatientName" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Doctor Selection -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-user-md"></i> Select Doctor</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="DoctorId" class="control-label"></label>
+                            <select asp-for="DoctorId" class="form-control" required>
+                                <option value="">-- Select Doctor --</option>
+                                @foreach (var doctor in Model.AvailableDoctors)
+                                {
+                                    <option value="@doctor.EmployeeID">Dr. @doctor.FirstName @doctor.LastName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="DoctorId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instruction Details -->
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-clipboard"></i> Instruction Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label">Title/Subject</label>
+                            <input asp-for="Title" class="form-control" required placeholder="e.g., Wound infection concern, Pain management request, etc." />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Instructions" class="control-label">Detailed Instructions/Request</label>
+                            <textarea asp-for="Instructions" class="form-control" rows="5" required placeholder="Provide detailed information about the patient's condition and what advice/instructions you need from the doctor..."></textarea>
+                            <span asp-validation-for="Instructions" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                Include: Current condition, vital signs, concerns, specific questions for the doctor.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Follow-up Information -->
+                <div class="card mb-3">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0"><i class="fas fa-calendar-check"></i> Follow-up Information (Optional)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="FollowUpActions" class="control-label">Requested Actions</label>
+                            <textarea asp-for="FollowUpActions" class="form-control" rows="3" placeholder="What specific actions do you need from the doctor? (e.g., review medication, examine patient, order tests)"></textarea>
+                            <span asp-validation-for="FollowUpActions" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FollowUpDate" class="control-label">Follow-up Date (if applicable)</label>
+                            <input asp-for="FollowUpDate" type="date" class="form-control" />
+                            <span asp-validation-for="FollowUpDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-paper-plane"></i> Send to Doctor
+                    </button>
+                    <a href="@Url.Action("ViewDoctorInstructions", new { patientId = Model.PatientId })" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Guidelines for Contacting Doctors</h5>
+                </div>
+                <div class="card-body">
+                    <h6>When to Contact a Doctor:</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="fas fa-exclamation-triangle text-danger"></i>
+                            <strong>Critical Changes:</strong> Sudden deterioration, severe pain, vital sign abnormalities
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-question-circle text-warning"></i>
+                            <strong>Medication Questions:</strong> New prescriptions, dosage adjustments, side effects
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-procedures text-info"></i>
+                            <strong>Procedure Requests:</strong> Need for specific tests, procedures, or consultations
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-clipboard-check text-success"></i>
+                            <strong>Progress Updates:</strong> Significant improvements or lack of expected progress
+                        </li>
+                    </ul>
+
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Urgent Situations:</strong> For immediate life-threatening emergencies,
+                        use the emergency call system or page the doctor directly.
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-history"></i>
+                        <strong>Previous Instructions:</strong><br>
+                        <a href="@Url.Action("ViewDoctorInstructions", new { patientId = Model.PatientId })" class="alert-link">
+                            View existing doctor instructions for this patient
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

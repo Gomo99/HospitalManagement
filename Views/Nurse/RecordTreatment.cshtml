@@ -1,0 +1,170 @@
+﻿@model HospitalManagement.ViewModel.TreatmentViewModel
+
+@{
+    ViewData["Title"] = "Record Treatment";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Record Treatment</h1>
+            <p class="lead">Patient: <strong>@Model.PatientName</strong></p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="RecordTreatment" method="post">
+                <input type="hidden" asp-for="PatientId" />
+                <input type="hidden" asp-for="PatientName" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Treatment Type -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-stethoscope"></i> Treatment Type</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="TreatmentType" class="control-label"></label>
+                            <select asp-for="TreatmentType" class="form-control">
+                                <option value="">-- Select Treatment Type --</option>
+                                <option value="IVDripChange">IV Drip Change</option>
+                                <option value="CatheterChange">Catheter Change</option>
+                                <option value="WoundDressing">Wound Dressing</option>
+                                <option value="BandageChange">Bandage Change</option>
+                                <option value="Injection">Injection</option>
+                                <option value="Other">Other Treatment</option>
+                            </select>
+                            <span asp-validation-for="TreatmentType" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treatment Details -->
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-clipboard"></i> Treatment Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label">Description</label>
+                            <input asp-for="Description" class="form-control" placeholder="Brief description of the treatment" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Details" class="control-label">Detailed Notes</label>
+                            <textarea asp-for="Details" class="form-control" rows="4" placeholder="Provide detailed notes about the treatment performed, observations, etc."></textarea>
+                            <span asp-validation-for="Details" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                For wound dressings: Note any signs of infection, drainage, odor, or redness.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medication Section (Optional) -->
+                <div class="card mb-3">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0"><i class="fas fa-pills"></i> Medication Administration (Optional)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="MedicationId" class="control-label">Medication</label>
+                            <select asp-for="MedicationId" class="form-control">
+                                <option value="">-- Select Medication (Optional) --</option>
+                                @foreach (var medication in Model.AvailableMedications)
+                                {
+                                    <option value="@medication.MedicationId">@medication.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="MedicationId" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Dosage" class="control-label">Dosage</label>
+                                    <input asp-for="Dosage" class="form-control" placeholder="e.g., 500" />
+                                    <span asp-validation-for="Dosage" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="DosageUnit" class="control-label">Unit</label>
+                                    <input asp-for="DosageUnit" class="form-control" placeholder="e.g., mg, ml, units" />
+                                    <span asp-validation-for="DosageUnit" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save"></i> Record Treatment
+                    </button>
+                    <a href="@Url.Action("PatientTreatmentHistory", new { patientId = Model.PatientId })" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Treatment Guidelines</h5>
+                </div>
+                <div class="card-body">
+                    <h6>IV Drip Change:</h6>
+                    <ul>
+                        <li>Check IV site for redness/swelling</li>
+                        <li>Note any infiltration</li>
+                        <li>Record fluid type and rate</li>
+                    </ul>
+
+                    <h6>Wound Dressing:</h6>
+                    <ul>
+                        <li>Note wound appearance</li>
+                        <li>Check for signs of infection</li>
+                        <li>Record drainage amount/type</li>
+                        <li>Measure wound size if applicable</li>
+                    </ul>
+
+                    <h6>Catheter Care:</h6>
+                    <ul>
+                        <li>Check for proper placement</li>
+                        <li>Note urine output/characteristics</li>
+                        <li>Check for signs of UTI</li>
+                    </ul>
+
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Important:</strong> If you notice any signs of infection (redness, swelling, pus, fever),
+                        please notify the doctor immediately.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Show/hide medication fields based on treatment type
+            $('#TreatmentType').change(function () {
+                var treatmentType = $(this).val();
+                if (treatmentType === 'MedicationAdministration' || treatmentType === 'Injection') {
+                    $('#medicationFields').show();
+                } else {
+                    $('#medicationFields').hide();
+                }
+            });
+        });
+    </script>
+}

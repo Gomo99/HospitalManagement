@@ -1,0 +1,375 @@
+﻿@model HospitalManagement.Models.VitalSigns
+
+@{
+    ViewData["Title"] = "View Vital Signs";
+
+    // Helper methods to safely compare values
+    bool IsHighBloodPressure(string systolic, string diastolic)
+    {
+        if (string.IsNullOrEmpty(systolic) || string.IsNullOrEmpty(diastolic))
+            return false;
+
+        if (int.TryParse(systolic, out int sys) && int.TryParse(diastolic, out int dia))
+        {
+            return sys > 140 || dia > 90;
+        }
+        return false;
+    }
+
+    bool HasHighTemperature(decimal? temperature)
+    {
+        return temperature.HasValue && temperature > 38.0m;
+    }
+
+    bool HasElevatedTemperature(decimal? temperature)
+    {
+        return temperature.HasValue && temperature > 37.5m && temperature <= 38.0m;
+    }
+
+    bool HasTachycardia(int? heartRate)
+    {
+        return heartRate.HasValue && heartRate > 100;
+    }
+
+    bool HasBradycardia(int? heartRate)
+    {
+        return heartRate.HasValue && heartRate < 60;
+    }
+
+    bool HasTachypnea(int? respRate)
+    {
+        return respRate.HasValue && respRate > 20;
+    }
+
+    bool HasHypoxia(decimal? oxygen)
+    {
+        return oxygen.HasValue && oxygen < 90m;
+    }
+
+    bool HasLowOxygen(decimal? oxygen)
+    {
+        return oxygen.HasValue && oxygen < 95m && oxygen >= 90m;
+    }
+
+    bool HasHyperglycemia(decimal? glucose)
+    {
+        return glucose.HasValue && glucose > 11.0m;
+    }
+
+    bool HasElevatedGlucose(decimal? glucose)
+    {
+        return glucose.HasValue && glucose > 7.0m && glucose <= 11.0m;
+    }
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Vital Signs Details</h1>
+            <p class="lead">Patient: <strong>@Model.Patient?.FullName</strong></p>
+            <p class="text-muted">Recorded: @Model.RecordedDateTime.ToString("yyyy-MM-dd HH:mm")</p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="btn-group" role="group">
+                <a href="@Url.Action("PatientVitalsHistory", new { patientId = Model.PatientId })" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to History
+                </a>
+                <a href="@Url.Action("RecordVitals", new { patientId = Model.PatientId })" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Record New
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Vital Signs Record</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Blood Pressure -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0"><i class="fas fa-heartbeat"></i> Blood Pressure</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    @if (!string.IsNullOrEmpty(Model.BloodPressureSystolic) && !string.IsNullOrEmpty(Model.BloodPressureDiastolic))
+                                    {
+                                        var isHighBP = IsHighBloodPressure(Model.BloodPressureSystolic, Model.BloodPressureDiastolic);
+                                        <h1 class="display-4 @(isHighBP ? "text-danger" : "text-success")">
+                                            @Model.BloodPressure
+                                        </h1>
+                                        <p class="text-muted">mmHg</p>
+                                        @if (isHighBP)
+                                        {
+                                            <span class="badge badge-danger">Hypertensive</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Normal</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">Not recorded</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Temperature -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0"><i class="fas fa-thermometer-half"></i> Temperature</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    @if (Model.Temperature.HasValue)
+                                    {
+                                        var hasHighTemp = HasHighTemperature(Model.Temperature);
+                                        var hasElevatedTemp = HasElevatedTemperature(Model.Temperature);
+
+                                        <h1 class="display-4 @(hasHighTemp ? "text-danger" : hasElevatedTemp ? "text-warning" : "text-success")">
+                                            @Model.Temperature.Value.ToString("F1")
+                                        </h1>
+                                        <p class="text-muted">°@Model.TemperatureUnit</p>
+                                        @if (hasHighTemp)
+                                        {
+                                            <span class="badge badge-danger">Fever</span>
+                                        }
+                                        else if (hasElevatedTemp)
+                                        {
+                                            <span class="badge badge-warning">Elevated</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Normal</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">Not recorded</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Heart Rate -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="fas fa-heart"></i> Heart Rate</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    @if (Model.HeartRate.HasValue)
+                                    {
+                                        var hasTachy = HasTachycardia(Model.HeartRate);
+                                        var hasBrady = HasBradycardia(Model.HeartRate);
+
+                                        <h2 class="@(hasTachy || hasBrady ? "text-warning" : "text-success")">
+                                            @Model.HeartRate bpm
+                                        </h2>
+                                        @if (hasTachy)
+                                        {
+                                            <span class="badge badge-warning">Tachycardia</span>
+                                        }
+                                        else if (hasBrady)
+                                        {
+                                            <span class="badge badge-warning">Bradycardia</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Normal</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">Not recorded</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Respiratory Rate -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-warning text-white">
+                                    <h6 class="mb-0"><i class="fas fa-lungs"></i> Respiratory Rate</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    @if (Model.RespiratoryRate.HasValue)
+                                    {
+                                        var hasTachypnea = HasTachypnea(Model.RespiratoryRate);
+
+                                        <h2 class="@(hasTachypnea ? "text-warning" : "text-success")">
+                                            @Model.RespiratoryRate bpm
+                                        </h2>
+                                        @if (hasTachypnea)
+                                        {
+                                            <span class="badge badge-warning">Tachypnea</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Normal</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">Not recorded</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Oxygen Saturation -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-danger text-white">
+                                    <h6 class="mb-0"><i class="fas fa-wind"></i> Oxygen Saturation</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    @if (Model.OxygenSaturation.HasValue)
+                                    {
+                                        var hasHypoxia = HasHypoxia(Model.OxygenSaturation);
+                                        var hasLowOxygen = HasLowOxygen(Model.OxygenSaturation);
+
+                                        <h2 class="@(hasHypoxia ? "text-danger" : hasLowOxygen ? "text-warning" : "text-success")">
+                                            @Model.OxygenSaturation%
+                                        </h2>
+                                        @if (hasHypoxia)
+                                        {
+                                            <span class="badge badge-danger">Hypoxia</span>
+                                        }
+                                        else if (hasLowOxygen)
+                                        {
+                                            <span class="badge badge-warning">Low</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Normal</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">Not recorded</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Blood Glucose -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-dark text-white">
+                                    <h6 class="mb-0"><i class="fas fa-tint"></i> Blood Glucose</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    @if (Model.BloodSugar.HasValue)
+                                    {
+                                        var hasHyperglycemia = HasHyperglycemia(Model.BloodSugar);
+                                        var hasElevatedGlucose = HasElevatedGlucose(Model.BloodSugar);
+
+                                        <h2 class="@(hasHyperglycemia ? "text-danger" : hasElevatedGlucose ? "text-warning" : "text-success")">
+                                            @Model.BloodSugar @Model.GlucoseUnit
+                                        </h2>
+                                        @if (hasHyperglycemia)
+                                        {
+                                            <span class="badge badge-danger">Hyperglycemia</span>
+                                        }
+                                        else if (hasElevatedGlucose)
+                                        {
+                                            <span class="badge badge-warning">Elevated</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Normal</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">Not recorded</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pain Level -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-secondary text-white">
+                                    <h6 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Pain Level</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    @if (Model.PainLevel.HasValue)
+                                    {
+                                        var isSeverePain = Model.PainLevel > 7;
+                                        var isModeratePain = Model.PainLevel > 4 && Model.PainLevel <= 7;
+
+                                        <div class="progress" style="height: 30px;">
+                                            <div class="progress-bar @(isSeverePain ? "bg-danger" : isModeratePain ? "bg-warning" : "bg-success")"
+                                                 role="progressbar"
+                                                 style="width: @(Model.PainLevel * 10)%;"
+                                                 aria-valuenow="@Model.PainLevel"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="10">
+                                                <span class="h5">@Model.PainLevel/10</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            @if (isSeverePain)
+                                            {
+                                                <span class="badge badge-danger">Severe Pain</span>
+                                            }
+                                            else if (isModeratePain)
+                                            {
+                                                <span class="badge badge-warning">Moderate Pain</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-success">Mild/No Pain</span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">Not recorded</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        @if (!string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="fas fa-sticky-note"></i> Notes</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>@Model.Notes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Recorded By -->
+                        <div class="col-md-12 mt-3">
+                            <div class="alert alert-light">
+                                <i class="fas fa-user-nurse"></i> Recorded by: <strong>@Model.TakenBy?.FirstName @Model.TakenBy?.LastName</strong>
+                                on @Model.RecordedDateTime.ToString("yyyy-MM-dd HH:mm")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

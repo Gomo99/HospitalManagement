@@ -296,6 +296,58 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/AdministerMedication.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcQWRtaW5pc3Rlck1lZGljYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/ContactDoctor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcQ29udGFjdERvY3Rvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/MedicationHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcTWVkaWNhdGlvbkhpc3RvcnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/MyPatients.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcTXlQYXRpZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/NurseDashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcTnVyc2VEYXNoYm9hcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/PatientOverview.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcUGF0aWVudE92ZXJ2aWV3LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/PatientTreatmentHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcUGF0aWVudFRyZWF0bWVudEhpc3RvcnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/PatientVitalsHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcUGF0aWVudFZpdGFsc0hpc3RvcnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/RecordTreatment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcUmVjb3JkVHJlYXRtZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/RecordVitals.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcUmVjb3JkVml0YWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/ViewDoctorInstructions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcVmlld0RvY3Rvckluc3RydWN0aW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/ViewInstructionDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcVmlld0luc3RydWN0aW9uRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Nurse/ViewVitalSigns.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnVyc2VcVmlld1ZpdGFsU2lnbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/gomol/source/repos/Gomo99/HospitalManagement/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

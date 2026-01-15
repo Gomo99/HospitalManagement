@@ -1,0 +1,186 @@
+﻿@model HospitalManagement.ViewModel.AdministerMedicationViewModel
+
+@{
+    ViewData["Title"] = "Administer Medication";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Administer Medication</h1>
+            <p class="lead">Patient: <strong>@Model.PatientName</strong></p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="AdministerMedication" method="post">
+                <input type="hidden" asp-for="PatientId" />
+                <input type="hidden" asp-for="PatientName" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Medication Selection -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-pills"></i> Select Medication</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="MedicationId" class="control-label"></label>
+                            <select asp-for="MedicationId" class="form-control" required>
+                                <option value="">-- Select Medication --</option>
+                                @foreach (var medication in Model.AvailableMedications)
+                                {
+                                    var scheduleInfo = medication.MedicationSchedules?.FirstOrDefault();
+                                    var scheduleLevel = scheduleInfo?.ScheduleLevel;
+                                    var scheduleWarning = scheduleLevel >= 5 ? " (Schedule 5 - Nursing Sister Only)" : "";
+
+                                    <option value="@medication.MedicationId"
+                                            data-schedule="@scheduleLevel">
+                                        @medication.Name@scheduleWarning
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="MedicationId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dosage Information -->
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-prescription"></i> Dosage Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Dosage" class="control-label">Dosage Amount</label>
+                                    <input asp-for="Dosage" class="form-control" required placeholder="e.g., 500" />
+                                    <span asp-validation-for="Dosage" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="DosageUnit" class="control-label">Unit</label>
+                                    <select asp-for="DosageUnit" class="form-control" required>
+                                        <option value="">-- Select Unit --</option>
+                                        <option value="mg">mg</option>
+                                        <option value="ml">ml</option>
+                                        <option value="g">g</option>
+                                        <option value="mcg">mcg</option>
+                                        <option value="units">units</option>
+                                        <option value="tablet">tablet(s)</option>
+                                        <option value="capsule">capsule(s)</option>
+                                        <option value="puff">puff(s)</option>
+                                    </select>
+                                    <span asp-validation-for="DosageUnit" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Administration Details -->
+                <div class="card mb-3">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0"><i class="fas fa-clipboard-check"></i> Administration Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Reason" class="control-label">Reason for Administration</label>
+                            <input asp-for="Reason" class="form-control" required placeholder="e.g., For pain management, post-operative care, etc." />
+                            <span asp-validation-for="Reason" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Notes" class="control-label">Additional Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Any additional notes about the administration..."></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule 5 Warning -->
+                <div id="schedule5Warning" class="alert alert-danger d-none">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> This is a Schedule 5 medication. Only Nursing Sisters are authorized to administer Schedule 5 or higher medications.
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                        <i class="fas fa-syringe"></i> Administer Medication
+                    </button>
+                    <a href="@Url.Action("PatientTreatmentHistory", new { patientId = Model.PatientId })" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Medication Guidelines</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Medication Schedules:</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Schedule 1-4:</strong> Can be administered by Registered Nurses
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Schedule 5+:</strong> Can only be administered by Nursing Sisters
+                        </li>
+                    </ul>
+
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Important Safety Checks:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Verify patient identity</li>
+                            <li>Check medication expiry date</li>
+                            <li>Confirm correct dosage</li>
+                            <li>Document administration immediately</li>
+                            <li>Monitor for adverse reactions</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-history"></i>
+                        <strong>Recent Medications:</strong><br>
+                        <a href="@Url.Action("MedicationHistory", new { patientId = Model.PatientId })" class="alert-link">
+                            View medication history for this patient
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var isNursingSister = @User.IsInRole("NURSINGSISTER").ToString().ToLower();
+
+            $('#MedicationId').change(function () {
+                var selectedOption = $(this).find('option:selected');
+                var scheduleLevel = selectedOption.data('schedule');
+
+                if (scheduleLevel >= 5 && !isNursingSister) {
+                    $('#schedule5Warning').removeClass('d-none');
+                    $('#submitBtn').prop('disabled', true).addClass('disabled');
+                } else {
+                    $('#schedule5Warning').addClass('d-none');
+                    $('#submitBtn').prop('disabled', false).removeClass('disabled');
+                }
+            });
+
+            // Initialize on page load
+            $('#MedicationId').trigger('change');
+        });
+    </script>
+}

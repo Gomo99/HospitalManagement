@@ -1,0 +1,167 @@
+﻿@model List<HospitalManagement.Models.Patient>
+
+@{
+    ViewData["Title"] = "Nurse Dashboard";
+    var unreadCount = ViewData["UnreadNotificationCount"] as int? ?? 0;
+    var assignedPatientCount = ViewData["AssignedPatientCount"] as int? ?? 0;
+    var pendingInstructionsCount = ViewData["PendingInstructionsCount"] as int? ?? 0;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="display-4">Nurse Dashboard</h1>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Assigned Patients</h5>
+                            <h2 class="mb-0">@assignedPatientCount</h2>
+                        </div>
+                        <i class="fas fa-user-injured fa-3x"></i>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("MyPatients")" class="text-white">View All Patients</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Pending Instructions</h5>
+                            <h2 class="mb-0">@pendingInstructionsCount</h2>
+                        </div>
+                        <i class="fas fa-tasks fa-3x"></i>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="#pending-tasks" class="text-white">View Tasks</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Notifications</h5>
+                            <h2 class="mb-0">@unreadCount</h2>
+                        </div>
+                        <i class="fas fa-bell fa-3x"></i>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Index", "Notification")" class="text-white">View Notifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="@Url.Action("RecordVitals", new { patientId = Model.FirstOrDefault()?.PatientId })" class="btn btn-primary btn-block">
+                                <i class="fas fa-heartbeat"></i> Record Vitals
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="@Url.Action("RecordTreatment", new { patientId = Model.FirstOrDefault()?.PatientId })" class="btn btn-success btn-block">
+                                <i class="fas fa-stethoscope"></i> Record Treatment
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="@Url.Action("AdministerMedication", new { patientId = Model.FirstOrDefault()?.PatientId })" class="btn btn-warning btn-block">
+                                <i class="fas fa-pills"></i> Administer Medication
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="@Url.Action("ContactDoctor", new { patientId = Model.FirstOrDefault()?.PatientId })" class="btn btn-info btn-block">
+                                <i class="fas fa-user-md"></i> Contact Doctor
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assigned Patients -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">My Assigned Patients (@Model.Count)</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Patient ID</th>
+                                        <th>Name</th>
+                                        <th>Gender</th>
+                                        <th>Age</th>
+                                        <th>Contact</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var patient in Model)
+                                    {
+                                        <tr>
+                                            <td>@patient.PatientId</td>
+                                            <td>@patient.FullName</td>
+                                            <td>@patient.Gender</td>
+                                            <td>@(DateTime.Now.Year - patient.DOB.Year)</td>
+                                            <td>@patient.Cellphone</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="@Url.Action("PatientOverview", new { patientId = patient.PatientId })" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-eye"></i> Overview
+                                                    </a>
+                                                    <a href="@Url.Action("RecordVitals", new { patientId = patient.PatientId })" class="btn btn-sm btn-primary">
+                                                        <i class="fas fa-heartbeat"></i> Vitals
+                                                    </a>
+                                                    <a href="@Url.Action("ViewDoctorInstructions", new { patientId = patient.PatientId })" class="btn btn-sm btn-warning">
+                                                        <i class="fas fa-file-medical"></i> Instructions
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No patients are currently assigned to you.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

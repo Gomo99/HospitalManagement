@@ -1,0 +1,153 @@
+﻿@model HospitalManagement.Models.DoctorInstructions
+
+@{
+    ViewData["Title"] = "Instruction Details";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Instruction Details</h1>
+            <p class="lead">Patient: <strong>@Model.Patient?.FullName</strong></p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="btn-group" role="group">
+                <a href="@Url.Action("ViewDoctorInstructions", new { patientId = Model.PatientId })" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Instructions
+                </a>
+                @if (!Model.IsCompleted)
+                {
+                    <form asp-action="MarkInstructionComplete" method="post" class="ml-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="instructionId" value="@Model.InstructionId" />
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Mark this instruction as completed?')">
+                            <i class="fas fa-check"></i> Mark as Completed
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header @(Model.IsCompleted ? "bg-success text-white" : "bg-primary text-white")">
+                    <h4 class="mb-0">
+                        @Model.Title
+                        @if (Model.IsCompleted)
+                        {
+                            <span class="badge badge-light ml-2">Completed</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-warning ml-2">Pending</span>
+                        }
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Instructions -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-clipboard"></i> Instructions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p style="white-space: pre-line;">@Model.Instructions</p>
+                                </div>
+                            </div>
+
+                            <!-- Follow-up Actions -->
+                            @if (!string.IsNullOrEmpty(Model.FollowUpActions))
+                            {
+                                <div class="card mb-4">
+                                    <div class="card-header bg-warning text-white">
+                                        <h5 class="mb-0"><i class="fas fa-tasks"></i> Follow-up Actions</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p style="white-space: pre-line;">@Model.FollowUpActions</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="col-md-4">
+                            <!-- Details Card -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <th>Instruction Date:</th>
+                                            <td>@Model.InstructionDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Doctor:</th>
+                                            <td>Dr. @Model.Doctor?.FirstName @Model.Doctor?.LastName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Recorded By:</th>
+                                            <td>@Model.RecordedBy?.FirstName @Model.RecordedBy?.LastName</td>
+                                        </tr>
+                                        @if (Model.FollowUpDate.HasValue)
+                                        {
+                                            <tr>
+                                                <th>Follow-up Date:</th>
+                                                <td>@Model.FollowUpDate.Value.ToString("yyyy-MM-dd")</td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <th>Status:</th>
+                                            <td>
+                                                @if (Model.IsCompleted)
+                                                {
+                                                    <span class="badge badge-success">Completed</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-warning">Pending</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        @if (Model.IsCompleted)
+                                        {
+                                            <tr>
+                                                <th>Completed By:</th>
+                                                <td>@Model.CompletedBy?.FirstName @Model.CompletedBy?.LastName</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Completed Date:</th>
+                                                <td>@Model.CompletedDate?.ToString("yyyy-MM-dd HH:mm")</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Patient Info -->
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="fas fa-user-injured"></i> Patient Information</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Name:</strong> @Model.Patient?.FullName</p>
+                                    <p><strong>Patient ID:</strong> @Model.PatientId</p>
+                                    <a href="@Url.Action("PatientOverview", new { patientId = Model.PatientId })" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> View Patient
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

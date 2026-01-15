@@ -38,6 +38,15 @@ namespace HospitalManagement.Data
         public DbSet<LoginAudit> LoginAudits { get; set; }
         public DbSet<UserPreference> UserPreferences { get; set; }
 
+        public DbSet<VitalSigns> VitalSigns { get; set; }
+        public DbSet<Treatment> Treatments { get; set; }
+        public DbSet<MedicationSchedule> MedicationSchedules { get; set; }
+        public DbSet<DoctorInstructions> DoctorInstructions { get; set; }
+
+
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -708,7 +717,50 @@ new Patient
                 .HasIndex(m => new { m.SenderId, m.SentDate });
 
 
+            modelBuilder.Entity<VitalSigns>()
+            .HasOne(v => v.Patient)
+            .WithMany()
+            .HasForeignKey(v => v.PatientId)
+            .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<VitalSigns>()
+                .HasOne(v => v.TakenBy)
+                .WithMany()
+                .HasForeignKey(v => v.TakenByEmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Treatment configuration
+            modelBuilder.Entity<Treatment>()
+                .HasOne(t => t.Patient)
+                .WithMany()
+                .HasForeignKey(t => t.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Treatment>()
+                .HasOne(t => t.AdministeredBy)
+                .WithMany()
+                .HasForeignKey(t => t.AdministeredByEmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // DoctorInstructions configuration
+            modelBuilder.Entity<DoctorInstructions>()
+                .HasOne(di => di.Patient)
+                .WithMany()
+                .HasForeignKey(di => di.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DoctorInstructions>()
+                .HasOne(di => di.Doctor)
+                .WithMany()
+                .HasForeignKey(di => di.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // MedicationSchedule configuration
+            modelBuilder.Entity<MedicationSchedule>()
+                .HasOne(ms => ms.Medication)
+                .WithMany(m => m.MedicationSchedules)
+                .HasForeignKey(ms => ms.MedicationId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
 

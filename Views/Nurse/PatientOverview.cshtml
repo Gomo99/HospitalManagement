@@ -1,0 +1,278 @@
+﻿@model HospitalManagement.Models.Patient
+
+@{
+    ViewData["Title"] = "Patient Overview";
+    var latestVitals = ViewData["LatestVitals"] as HospitalManagement.Models.VitalSigns;
+    var latestInstruction = ViewData["LatestInstruction"] as HospitalManagement.Models.DoctorInstructions;
+    var recentTreatments = ViewData["RecentTreatments"] as List<HospitalManagement.Models.Treatment>;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="display-4">Patient Overview</h1>
+            <p class="lead">Patient: <strong>@Model.FullName</strong> (ID: @Model.PatientId)</p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="btn-group" role="group">
+                <a href="@Url.Action("MyPatients")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Patients
+                </a>
+                <a href="@Url.Action("RecordVitals", new { patientId = Model.PatientId })" class="btn btn-primary">
+                    <i class="fas fa-heartbeat"></i> Record Vitals
+                </a>
+                <a href="@Url.Action("RecordTreatment", new { patientId = Model.PatientId })" class="btn btn-success">
+                    <i class="fas fa-stethoscope"></i> Record Treatment
+                </a>
+                <a href="@Url.Action("AdministerMedication", new { patientId = Model.PatientId })" class="btn btn-warning">
+                    <i class="fas fa-pills"></i> Administer Medication
+                </a>
+                <a href="@Url.Action("ContactDoctor", new { patientId = Model.PatientId })" class="btn btn-info">
+                    <i class="fas fa-user-md"></i> Contact Doctor
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Patient Information -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-user"></i> Patient Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <th>Name:</th>
+                            <td>@Model.FullName</td>
+                        </tr>
+                        <tr>
+                            <th>Age:</th>
+                            <td>@(DateTime.Now.Year - Model.DOB.Year) years</td>
+                        </tr>
+                        <tr>
+                            <th>Gender:</th>
+                            <td>@Model.Gender</td>
+                        </tr>
+                        <tr>
+                            <th>ID Number:</th>
+                            <td>@Model.IdNumber</td>
+                        </tr>
+                        <tr>
+                            <th>Contact:</th>
+                            <td>@Model.Cellphone</td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td>
+                                <span class="badge badge-success">Admitted</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card mt-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Quick Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h3>5</h3>
+                            <small class="text-muted">Vitals Today</small>
+                        </div>
+                        <div class="col-6">
+                            <h3>3</h3>
+                            <small class="text-muted">Treatments Today</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Vital Signs -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-heartbeat"></i> Latest Vital Signs</h5>
+                        <a href="@Url.Action("PatientVitalsHistory", new { patientId = Model.PatientId })" class="btn btn-sm btn-light">
+                            <i class="fas fa-history"></i> View History
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (latestVitals != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <div class="card @(int.Parse(latestVitals.BloodPressureSystolic) > 140 || int.Parse(latestVitals.BloodPressureDiastolic) > 90 ? "border-danger" : "border-success")">
+                                    <div class="card-body">
+                                        <h3>@latestVitals.BloodPressure</h3>
+                                        <small class="text-muted">Blood Pressure</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="card @(latestVitals.Temperature > 38 ? "border-danger" : "border-success")">
+                                    <div class="card-body">
+                                        <h3>@latestVitals.TemperatureWithUnit</h3>
+                                        <small class="text-muted">Temperature</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="card @(latestVitals.HeartRate > 100 || latestVitals.HeartRate < 60 ? "border-warning" : "border-success")">
+                                    <div class="card-body">
+                                        <h3>@latestVitals.HeartRate</h3>
+                                        <small class="text-muted">Heart Rate</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="card @(latestVitals.OxygenSaturation < 95 ? "border-warning" : "border-success")">
+                                    <div class="card-body">
+                                        <h3>@latestVitals.OxygenSaturation%</h3>
+                                        <small class="text-muted">O₂ Saturation</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-muted text-center">
+                            <small>Recorded: @latestVitals.RecordedDateTime.ToString("yyyy-MM-dd HH:mm")</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> No vital signs recorded yet.
+                            <a href="@Url.Action("RecordVitals", new { patientId = Model.PatientId })" class="alert-link">Record vital signs</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Latest Doctor Instructions -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-file-medical"></i> Latest Doctor Instructions</h5>
+                        <a href="@Url.Action("ViewDoctorInstructions", new { patientId = Model.PatientId })" class="btn btn-sm btn-light">
+                            <i class="fas fa-list"></i> View All
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (latestInstruction != null)
+                    {
+                        <h6>@latestInstruction.Title</h6>
+                        <p class="card-text">@(latestInstruction.Instructions.Length > 150 ? latestInstruction.Instructions.Substring(0, 150) + "..." : latestInstruction.Instructions)</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                Dr. @latestInstruction.Doctor?.FirstName - @latestInstruction.InstructionDate.ToString("yyyy-MM-dd HH:mm")
+                            </small>
+                            <span class="badge @(latestInstruction.IsCompleted ? "badge-success" : "badge-warning")">
+                                @(latestInstruction.IsCompleted ? "Completed" : "Pending")
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No doctor instructions yet.
+                            <a href="@Url.Action("ContactDoctor", new { patientId = Model.PatientId })" class="alert-link">Contact doctor</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recent Treatments -->
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-stethoscope"></i> Recent Treatments</h5>
+                        <a href="@Url.Action("PatientTreatmentHistory", new { patientId = Model.PatientId })" class="btn btn-sm btn-light">
+                            <i class="fas fa-history"></i> View History
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (recentTreatments != null && recentTreatments.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var treatment in recentTreatments)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@treatment.Description</h6>
+                                        <small class="text-muted">@treatment.TreatmentDateTime.ToString("HH:mm")</small>
+                                    </div>
+                                    <p class="mb-1">@treatment.TreatmentType</p>
+                                    <small class="text-muted">By: @treatment.AdministeredBy?.FirstName</small>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No treatments recorded yet.
+                            <a href="@Url.Action("RecordTreatment", new { patientId = Model.PatientId })" class="alert-link">Record treatment</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-heartbeat fa-3x text-primary mb-3"></i>
+                    <h5>Vital Signs</h5>
+                    <a href="@Url.Action("PatientVitalsHistory", new { patientId = Model.PatientId })" class="btn btn-primary btn-sm">View History</a>
+                    <a href="@Url.Action("RecordVitals", new { patientId = Model.PatientId })" class="btn btn-outline-primary btn-sm">Record New</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-pills fa-3x text-warning mb-3"></i>
+                    <h5>Medications</h5>
+                    <a href="@Url.Action("MedicationHistory", new { patientId = Model.PatientId })" class="btn btn-warning btn-sm">View History</a>
+                    <a href="@Url.Action("AdministerMedication", new { patientId = Model.PatientId })" class="btn btn-outline-warning btn-sm">Administer</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-file-medical fa-3x text-success mb-3"></i>
+                    <h5>Instructions</h5>
+                    <a href="@Url.Action("ViewDoctorInstructions", new { patientId = Model.PatientId })" class="btn btn-success btn-sm">View All</a>
+                    <a href="@Url.Action("ContactDoctor", new { patientId = Model.PatientId })" class="btn btn-outline-success btn-sm">Contact Doctor</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-clipboard-list fa-3x text-info mb-3"></i>
+                    <h5>Treatments</h5>
+                    <a href="@Url.Action("PatientTreatmentHistory", new { patientId = Model.PatientId })" class="btn btn-info btn-sm">View History</a>
+                    <a href="@Url.Action("RecordTreatment", new { patientId = Model.PatientId })" class="btn btn-outline-info btn-sm">Record New</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

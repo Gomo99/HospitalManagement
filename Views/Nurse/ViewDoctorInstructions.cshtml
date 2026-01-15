@@ -1,0 +1,145 @@
+﻿@model HospitalManagement.ViewModel.PatientInstructionsViewModel
+
+@{
+    ViewData["Title"] = "Doctor Instructions";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Doctor Instructions</h1>
+            <p class="lead">Patient: <strong>@Model.PatientName</strong></p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="btn-group" role="group">
+                <a href="@Url.Action("ContactDoctor", new { patientId = Model.PatientId })" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Contact Doctor
+                </a>
+                <a href="@Url.Action("PatientOverview", new { patientId = Model.PatientId })" class="btn btn-info">
+                    <i class="fas fa-user"></i> Patient Overview
+                </a>
+                <a href="@Url.Action("MyPatients")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Patients
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Instructions != null && Model.Instructions.Any())
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Doctor Instructions (@Model.Instructions.Count)</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var instruction in Model.Instructions)
+                        {
+                            <div class="card mb-3 @(instruction.IsCompleted ? "border-success" : "border-primary")">
+                                <div class="card-header @(instruction.IsCompleted ? "bg-success text-white" : "bg-primary text-white")">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">
+                                            @instruction.Title
+                                            @if (instruction.IsCompleted)
+                                            {
+                                                <span class="badge badge-light ml-2">Completed</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-warning ml-2">Pending</span>
+                                            }
+                                        </h5>
+                                        <span class="small">@instruction.InstructionDate.ToString("yyyy-MM-dd HH:mm")</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h6>Instructions:</h6>
+                                            <p>@instruction.Instructions</p>
+
+                                            @if (!string.IsNullOrEmpty(instruction.FollowUpActions))
+                                            {
+                                                <h6>Follow-up Actions:</h6>
+                                                <p>@instruction.FollowUpActions</p>
+                                            }
+
+                                            @if (instruction.FollowUpDate.HasValue)
+                                            {
+                                                <h6>Follow-up Date:</h6>
+                                                <p>@instruction.FollowUpDate.Value.ToString("yyyy-MM-dd")</p>
+                                            }
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6>Details:</h6>
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item">
+                                                    <strong>Doctor:</strong><br>
+                                                    Dr. @instruction.Doctor?.FirstName @instruction.Doctor?.LastName
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Recorded By:</strong><br>
+                                                    @instruction.RecordedBy?.FirstName @instruction.RecordedBy?.LastName
+                                                </li>
+                                                @if (instruction.IsCompleted)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <strong>Completed By:</strong><br>
+                                                        @instruction.CompletedBy?.FirstName @instruction.CompletedBy?.LastName
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <strong>Completed Date:</strong><br>
+                                                        @instruction.CompletedDate?.ToString("yyyy-MM-dd HH:mm")
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    @if (!instruction.IsCompleted)
+                                    {
+                                        <hr />
+                                        <form asp-action="MarkInstructionComplete" method="post" class="mt-3">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="instructionId" value="@instruction.InstructionId" />
+                                            <button type="submit" class="btn btn-success" onclick="return confirm('Mark this instruction as completed?')">
+                                                <i class="fas fa-check"></i> Mark as Completed
+                                            </button>
+                                            <a href="@Url.Action("ViewInstructionDetails", new { id = instruction.InstructionId })" class="btn btn-info">
+                                                <i class="fas fa-eye"></i> View Details
+                                            </a>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <div class="mt-3">
+                                            <a href="@Url.Action("ViewInstructionDetails", new { id = instruction.InstructionId })" class="btn btn-info">
+                                                <i class="fas fa-eye"></i> View Details
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No doctor instructions recorded for this patient yet.
+                    <a href="@Url.Action("ContactDoctor", new { patientId = Model.PatientId })" class="alert-link">Contact doctor for instructions</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

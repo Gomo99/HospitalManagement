@@ -463,6 +463,45 @@ namespace HospitalManagement.Services
 
 
 
+        // Add these methods to NotificationService class
+        public async Task CreateNotificationAsync(int receiverId, int senderId, string title, string message, NotificationPriority priority)
+        {
+            var notification = new Notification
+            {
+                Title = title,
+                Message = message,
+                SenderId = senderId,
+                ReceiverId = receiverId,
+                Type = NotificationType.System,
+                Priority = priority,
+                CreatedDate = DateTime.Now
+            };
+
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CreateDoctorInstructionsNotification(int patientId, int instructionId, int doctorId, int senderId, string title)
+        {
+            var patient = await _context.Patients.FindAsync(patientId);
+            if (patient == null) return;
+
+            var notification = new Notification
+            {
+                Title = title,
+                Message = $"New instructions from Nurse for patient {patient.FullName}",
+                SenderId = senderId,
+                ReceiverId = doctorId,
+                Type = NotificationType.System,
+                Priority = NotificationPriority.Normal,
+                PatientId = patientId,
+                CreatedDate = DateTime.Now
+            };
+
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+        }
+
     }
 
 

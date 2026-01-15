@@ -1,0 +1,235 @@
+﻿@model HospitalManagement.ViewModel.RecordVitalsViewModel
+
+@{
+    ViewData["Title"] = "Record Vital Signs";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Record Vital Signs</h1>
+            <p class="lead">Patient: <strong>@Model.PatientName</strong></p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="RecordVitals" method="post">
+                <input type="hidden" asp-for="PatientId" />
+                <input type="hidden" asp-for="PatientName" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Blood Pressure -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-heartbeat"></i> Blood Pressure</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="BloodPressureSystolic" class="control-label">Systolic (mmHg)</label>
+                                    <input asp-for="BloodPressureSystolic" class="form-control" placeholder="e.g., 120" />
+                                    <span asp-validation-for="BloodPressureSystolic" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="BloodPressureDiastolic" class="control-label">Diastolic (mmHg)</label>
+                                    <input asp-for="BloodPressureDiastolic" class="form-control" placeholder="e.g., 80" />
+                                    <span asp-validation-for="BloodPressureDiastolic" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Temperature -->
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-thermometer-half"></i> Temperature</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Temperature" class="control-label">Temperature</label>
+                                    <input asp-for="Temperature" class="form-control" placeholder="e.g., 36.5" />
+                                    <span asp-validation-for="Temperature" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="TemperatureUnit" class="control-label">Unit</label>
+                                    <select asp-for="TemperatureUnit" class="form-control">
+                                        <option value="Celsius">°C (Celsius)</option>
+                                        <option value="Fahrenheit">°F (Fahrenheit)</option>
+                                    </select>
+                                    <span asp-validation-for="TemperatureUnit" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Heart & Respiratory Rate -->
+                <div class="card mb-3">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-heart"></i> Heart & Respiratory Rate</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="HeartRate" class="control-label">Heart Rate (bpm)</label>
+                                    <input asp-for="HeartRate" class="form-control" placeholder="e.g., 72" />
+                                    <span asp-validation-for="HeartRate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="RespiratoryRate" class="control-label">Respiratory Rate (bpm)</label>
+                                    <input asp-for="RespiratoryRate" class="form-control" placeholder="e.g., 16" />
+                                    <span asp-validation-for="RespiratoryRate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Oxygen & Glucose -->
+                <div class="card mb-3">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0"><i class="fas fa-lungs"></i> Oxygen & Glucose Levels</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="OxygenSaturation" class="control-label">O₂ Saturation (%)</label>
+                                    <input asp-for="OxygenSaturation" class="form-control" placeholder="e.g., 98" />
+                                    <span asp-validation-for="OxygenSaturation" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="BloodSugar" class="control-label">Blood Glucose</label>
+                                    <input asp-for="BloodSugar" class="form-control" placeholder="e.g., 5.5" />
+                                    <span asp-validation-for="BloodSugar" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="GlucoseUnit" class="control-label">Glucose Unit</label>
+                            <select asp-for="GlucoseUnit" class="form-control">
+                                <option value="mg_dL">mg/dL</option>
+                                <option value="mmol_L">mmol/L</option>
+                            </select>
+                            <span asp-validation-for="GlucoseUnit" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pain Level & Notes -->
+                <div class="card mb-3">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Additional Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="PainLevel" class="control-label">Pain Level (0-10)</label>
+                                    <input asp-for="PainLevel" type="range" min="0" max="10" class="form-control-range" id="painSlider" />
+                                    <div class="d-flex justify-content-between">
+                                        <span>0 (No Pain)</span>
+                                        <span id="painValue">5</span>
+                                        <span>10 (Severe)</span>
+                                    </div>
+                                    <span asp-validation-for="PainLevel" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <div class="form-group">
+                                    <label asp-for="Notes" class="control-label">Additional Notes</label>
+                                    <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Enter any additional observations or notes..."></textarea>
+                                    <span asp-validation-for="Notes" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save"></i> Save Vital Signs
+                    </button>
+                    <a href="@Url.Action("NurseDashboard")" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <a href="@Url.Action("PatientVitalsHistory", new { patientId = Model.PatientId })" class="btn btn-info btn-lg">
+                        <i class="fas fa-history"></i> View History
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Guidelines</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Blood Pressure:</strong><br>
+                            Normal: 120/80 mmHg<br>
+                            Hypertension: >140/90 mmHg
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Temperature:</strong><br>
+                            Normal: 36.5-37.5°C<br>
+                            Fever: >38.0°C
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Heart Rate:</strong><br>
+                            Normal: 60-100 bpm<br>
+                            Tachycardia: >100 bpm
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Respiratory Rate:</strong><br>
+                            Normal: 12-20 bpm<br>
+                            Tachypnea: >20 bpm
+                        </li>
+                        <li class="list-group-item">
+                            <strong>O₂ Saturation:</strong><br>
+                            Normal: 95-100%<br>
+                            Hypoxia: <90%
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Blood Glucose:</strong><br>
+                            Normal: 4.0-7.0 mmol/L<br>
+                            Hyperglycemia: >11.0 mmol/L
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Update pain level display
+            $('#painSlider').on('input', function () {
+                $('#painValue').text($(this).val());
+            });
+
+            // Set initial pain value
+            $('#painValue').text($('#painSlider').val());
+        });
+    </script>
+}

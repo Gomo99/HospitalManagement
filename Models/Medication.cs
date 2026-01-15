@@ -31,6 +31,6 @@ namespace HospitalManagement.Models
         //[Required]
         public Status MedicationStatus { get; set; } = Status.Active;
 
-
+        public virtual ICollection<MedicationSchedule>? MedicationSchedules { get; set; }
     }
 }
